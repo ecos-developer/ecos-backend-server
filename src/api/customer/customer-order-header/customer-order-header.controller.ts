@@ -38,7 +38,8 @@ export class CustomerOrderHeaderController {
     summary: 'Insert customer order header',
     description: `
     - This endpoint inserts a new customer order header
-    - It validate that the corresponding DriverOrderHeader is approved by an admin before creating the customer order
+    - Include validation the corresponding DriverOrderHeader is approved by an admin before creating the customer order
+    - Include validation non duplicate pairs between order_id and user_id
     `,
   })
   async create(
@@ -50,6 +51,17 @@ export class CustomerOrderHeaderController {
     if (!driverOrderHeader.is_admin_approved) {
       throw new MethodNotAllowedException(
         `DriverOrderHeader must be approved by admin first! status order: ${driverOrderHeader.is_admin_approved}`,
+      );
+    }
+    
+    const findDuplicateCustomerOrderHeader =
+      await this.customerOrderHeaderService.findByPairs(
+        createCustomerOrderHeaderDto.user_id,
+        driverOrderHeader.order_id,
+      );
+    if (findDuplicateCustomerOrderHeader) {
+      throw new MethodNotAllowedException(
+        `customer ${driverOrderHeader.user.email} is already book this driver! Duplicate pairs order_id and user_id detected!`,
       );
     }
     const newCustomerORder = await this.customerOrderHeaderService.create(

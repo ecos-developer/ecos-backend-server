@@ -47,6 +47,16 @@ export class DriverOrderHeaderService {
       include: {
         user: true,
         admin_time_block: true,
+        customer_order_header: {
+          include: {
+            user: {
+              include: {
+                customer_detail: true,
+                user_detail: true,
+              },
+            },
+          },
+        },
       },
     });
 

@@ -9,8 +9,6 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
-  Req,
-  MethodNotAllowedException,
 } from '@nestjs/common';
 import { DriverOrderHeaderService } from './driver-order-header.service';
 import { CreateDriverOrderHeaderDto } from './dto/create-driver-order-header.dto';
@@ -22,8 +20,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
-import { Request } from 'express';
-import { Role, User } from '@prisma/client';
 
 @ApiTags('DriverOrderHeader Table (token required)')
 @ApiBearerAuth('access-token')
@@ -64,12 +60,18 @@ export class DriverOrderHeaderController {
   }
 
   @Patch(':order_id')
-  @ApiOperation({ summary: 'update driver order by id' })
+  @ApiOperation({
+    summary: 'update driver order by id',
+    description: `
+      - all of the field is optional
+      - meant for update status order driver (will be handled by admin)
+    `,
+  })
   @ApiParam({
     name: 'order_id',
     description: 'order_id of the driver order',
     type: String,
-    example: 'b8cff7ec-cbf6-4788-84ea-71fe9c672dfb',
+    example: 'get this id from GET DriverOrderHeader',
   })
   async update(
     @Param('order_id') id: string,

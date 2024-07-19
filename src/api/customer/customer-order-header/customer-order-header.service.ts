@@ -62,6 +62,17 @@ export class CustomerOrderHeaderService {
     return findCustomerOrderHeader;
   }
 
+  async findByPairs(user_id: string, order_id: string) {
+    const findCustomerOrderHeader =
+      await this.prisma.customerOrderHeader.findFirst({
+        where: {
+          order_id: order_id,
+          user_id: user_id,
+        },
+      });
+    return findCustomerOrderHeader;
+  }
+
   async update(
     id: string,
     updateCustomerOrderHeaderDto: UpdateCustomerOrderHeaderDto,
