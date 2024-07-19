@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  DEFAULT
+  ADMIN
+  DRIVER
+  CUSTOMER
+}
+
+// MODEL USER AND ITS DETAIL
+model User {
+  user_id               String                @id @default(uuid())
+  email                 String
+  password              String
+  role                  Role
+  user_detail           UserDetail?
+  driver_detail         DriverDetail?
+  customer_detail       CustomerDetail?
+  term                  Term?
+  customer_order_header CustomerOrderHeader[]
+  realtime_location     RealtimeLocation?
+  driver_order_header   DriverOrderHeader[]
+  chat_message          ChatMessage[]
+  admin_time_block      AdminTimeBlock[]
+  created_at            DateTime              @default(now())
+}
+
+model CustomerDetail {
+  user_id      String @id
+  binusian_id  String
+  parent_phone String
+  user         User?  @relation(fields: [user_id], references: [user_id])
+}
+
+model UserDetail {
+  user_id           String   @id
+  profile_image     String
+  phone             String   @unique
+  name              String
+  street            String
+  grade             Int
+  is_admin_approved Boolean
+  is_email_verified Boolean
+  is_phone_verified Boolean
+  User              User?    @relation(fields: [user_id], references: [user_id])
+  updated_at        DateTime @updatedAt
+}
+
+model DriverDetail {
+  user_id              String   @id
+  vehicle_image        String
+  ktp                  String
+  sim                  String
+  stnk                 String
+  kk                   String
+  vehicle_category     String
+  vehicle_model        String
+  vehicle_capacity     Int
+  vehicle_number_plate String
+  user                 User?    @relation(fields: [user_id], references: [user_id])
+  payment_id           String?  @unique
+  payment              Payment? @relation(fields: [payment_id], references: [payment_id])
+  updated_at           DateTime @updatedAt
+}
+
+model Payment {
+  payment_id     String        @id @default(uuid())
+  name           String
+  account_number String        @unique
+  driver_detail  DriverDetail?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+}
+
+model Term {
+  user_id    String   @id
+  role       Role
+  is_agree   Boolean
+  user       User?    @relation(fields: [user_id], references: [user_id])
+  term_text  TermText @relation(fields: [role], references: [role])
+  created_at DateTime @default(now())
+}
+
+model TermText {
+  role       Role     @id
+  terms      Term[]
+  text       String
+  created_at DateTime @default(now())
+}
+
+model RealtimeLocation {
+  user_id   String   @id
+  date      DateTime
+  latitude  Decimal
+  longitude Decimal
+  user      User?    @relation(fields: [user_id], references: [user_id])
+  location  String
+}
+
+model DriverOrderHeader {
+  order_id              String                @id @default(uuid())
+  driver_id             String
+  time_block_id         String
+  is_admin_approved     Boolean
+  customer_order_header CustomerOrderHeader[]
+  user                  User?                 @relation(fields: [driver_id], references: [user_id])
+  room_chat             RoomChat?
+  admin_time_block      AdminTimeBlock?       @relation(fields: [time_block_id], references: [time_block_id])
+  calculate_payment     CalculatePayment?
+  created_at            DateTime              @default(now())
+  updated_at            DateTime              @updatedAt
+}
+
+model CustomerOrderHeader {
+  customer_order_id                 String                          @id @default(uuid())
+  order_id                          String
+  user_id                           String
+  extra_passenger                   Int
+  driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id])
+  user                              User?                           @relation(fields: [user_id], references: [user_id])
+  payment_header                    PaymentHeader[]
+  realtime_customer_each_day_pickup RealtimeCustomerEachDayPickup[]
+  created_at                        DateTime                        @default(now())
+}
+
+model RoomChat {
+  order_id            String             @id
+  name                String
+  is_expired          Boolean
+  driver_order_header DriverOrderHeader? @relation(fields: [order_id], references: [order_id])
+  chat_message        ChatMessage[]
+  created_at          DateTime           @default(now())
+}
+
+model ChatMessage {
+  chat_id    String    @id @default(uuid())
+  order_id   String
+  user_id    String
+  message    String
+  user       User?     @relation(fields: [user_id], references: [user_id])
+  room_chat  RoomChat? @relation(fields: [order_id], references: [order_id])
+  created_at DateTime  @default(now())
+}
+
+model AdminTimeBlock {
+  time_block_id       String              @id @default(uuid())
+  user_id             String
+  start_date          DateTime
+  end_date            DateTime
+  user                User?               @relation(fields: [user_id], references: [user_id])
+  driver_order_header DriverOrderHeader[]
+  created_at          DateTime            @default(now())
+}
+
+model CalculatePayment {
+  calculate_payment_id String             @id @default(uuid())
+  order_id             String             @unique
+  customer_payment_id  String             @unique
+  payment_total        Int
+  driver_order_header  DriverOrderHeader? @relation(fields: [order_id], references: [order_id])
+  payment_header       PaymentHeader?     @relation(fields: [customer_payment_id], references: [customer_payment_id])
+  created_at           DateTime           @default(now())
+  updated_at           DateTime           @updatedAt
+}
+
+model PaymentHeader {
+  customer_payment_id   String               @id @default(uuid())
+  customer_order_id     String               @unique
+  payment_proof_image   String?
+  payment_total         Int
+  is_admin_approved     Boolean
+  expired_at            DateTime
+  calculate_payment     CalculatePayment?
+  customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id])
+  created_at            DateTime             @default(now())
+  updated_at            DateTime             @updatedAt
+}
+
+model RealtimeCustomerEachDayPickup {
+  pickup_id             String               @id @default(uuid())
+  customer_order_id     String
+  date                  DateTime
+  is_canceled           Boolean
+  is_pickup             Boolean
+  is_arrived            Boolean
+  customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id])
+  start_pickup          DateTime?
+  end_pickup            DateTime
+}
