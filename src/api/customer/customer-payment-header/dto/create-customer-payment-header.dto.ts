@@ -1,17 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateCustomerPaymentHeaderDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Customer order ID',
+    description: 'get the ID from CustomerOrderHeader table',
     example: 'test',
   })
   customer_order_id: string;

@@ -49,7 +49,7 @@ export class CustomerPaymentHeaderController {
   async create(
     @Body() createCustomerPaymentHeaderDto: CreateCustomerPaymentHeaderDto,
     @UploadedFile() payment_proof_image_file: Express.Multer.File,
-  ) { 
+  ) {
     if (payment_proof_image_file.size === undefined) {
       throw new BadRequestException('Uploaded file is empty.');
     }
@@ -63,8 +63,7 @@ export class CustomerPaymentHeaderController {
 
   @Get()
   async findAll() {
-    const allCustomerPayment =
-      await this.customerPaymentHeaderService.findAll();
+    const allCustomerPayment = await this.customerPaymentHeaderService.findAll();
     return new HttpException(allCustomerPayment, HttpStatus.CREATED);
   }
 
