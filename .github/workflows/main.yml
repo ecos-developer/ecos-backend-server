@@ -50,8 +50,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            mkdir /project/ecos/EcosBackendCompose
-            cd /project/ecos/EcosBackendCompose
+            mkdir /project/ecos/ecos-backend-server
+            cd /project/ecos/ecos-backend-server
             wget -O docker-compose-server.yml https://raw.githubusercontent.com/ecos-developer/ecos-backend-server/main/docker-compose-server.yml?token=GHSAT0AAAAAACUB2BQ66IKVZLLJ7KFJR36OZUZ6BAQ
 
   deploy:
@@ -66,7 +66,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /project/ecos/EcosBackendCompose
+            cd /project/ecos/ecos-backend-server
             docker rm ecos_backend -f
             docker rmi johedotcom/ecos-backend-repository -f
             docker compose -f docker-compose-server.yaml down
