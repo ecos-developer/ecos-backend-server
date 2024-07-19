@@ -9,6 +9,8 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
+  Req,
+  MethodNotAllowedException,
 } from '@nestjs/common';
 import { DriverOrderHeaderService } from './driver-order-header.service';
 import { CreateDriverOrderHeaderDto } from './dto/create-driver-order-header.dto';
@@ -20,6 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
+import { Request } from 'express';
+import { Role, User } from '@prisma/client';
 
 @ApiTags('DriverOrderHeader Table (token required)')
 @ApiBearerAuth('access-token')
@@ -33,10 +37,10 @@ export class DriverOrderHeaderController {
   @Post()
   @ApiOperation({ summary: 'insert driver order header' })
   async create(@Body() createDriverOrderHeaderDto: CreateDriverOrderHeaderDto) {
-    const newDriverORderHeader = await this.driverOrderHeaderService.create(
+    const newDriverOrderHeader = await this.driverOrderHeaderService.create(
       createDriverOrderHeaderDto,
     );
-    return new HttpException(newDriverORderHeader, HttpStatus.CREATED);
+    return new HttpException(newDriverOrderHeader, HttpStatus.CREATED);
   }
 
   @Get()

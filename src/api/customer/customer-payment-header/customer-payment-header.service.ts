@@ -18,6 +18,15 @@ export class CustomerPaymentHeaderService {
   ) {
     const image_name = await this.imageUpload(payment_proof_image_file);
     createCustomerPaymentHeaderDto.payment_proof_image = image_name;
+    const expired_at = new Date(new Date().getTime() + 12 * 60 * 60 * 1000);
+    const newPaymentHeader = await this.prisma.paymentHeader.create({
+      data: {
+        ...createCustomerPaymentHeaderDto,
+        is_admin_approved: false,
+        expired_at,
+      },
+    });
+    return newPaymentHeader;
   }
 
   async imageUpload(file: Express.Multer.File) {

@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UsePipes,
+  BadRequestException,
 } from '@nestjs/common';
 import { CustomerPaymentHeaderService } from './customer-payment-header.service';
 import { CreateCustomerPaymentHeaderDto } from './dto/create-customer-payment-header.dto';
@@ -45,14 +46,19 @@ export class CustomerPaymentHeaderController {
   })
   @UsePipes(new CustomerPaymentHeaderPipe())
   @UseInterceptors(FileInterceptor('payment_proof_image_file'))
-  create(
+  async create(
     @Body() createCustomerPaymentHeaderDto: CreateCustomerPaymentHeaderDto,
     @UploadedFile() payment_proof_image_file: Express.Multer.File,
-  ) {
-    return this.customerPaymentHeaderService.create(
+  ) { 
+    if (payment_proof_image_file.size === undefined) {
+      throw new BadRequestException('Uploaded file is empty.');
+    }
+
+    const newPaymentHeader = await this.customerPaymentHeaderService.create(
       payment_proof_image_file,
       createCustomerPaymentHeaderDto,
     );
+    return new HttpException(newPaymentHeader, HttpStatus.CREATED);
   }
 
   @Get()

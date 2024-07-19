@@ -4,7 +4,7 @@ import { IsNumber, IsString } from 'class-validator';
 export class CreateCustomerOrderHeaderDto {
   @IsString()
   @ApiProperty({
-    example: 'b8cff7ec-cbf6-4788-84ea-71fe9c672dfb',
+    example: 'get this ID from DriverOrderHeader table',
     type: String,
     description: 'input Order ID',
     required: true,
@@ -13,7 +13,7 @@ export class CreateCustomerOrderHeaderDto {
 
   @IsString()
   @ApiProperty({
-    example: 'dbf00469-0599-4db5-9a62-9d203c671d61',
+    example: 'get this ID from table User that has role CUSTOMER',
     type: String,
     description: 'input User ID',
     required: true,

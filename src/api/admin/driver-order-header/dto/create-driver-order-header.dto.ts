@@ -6,7 +6,7 @@ export class CreateDriverOrderHeaderDto {
   @ApiProperty({
     description: 'registered driver ID',
     type: String,
-    example: '98a80dd4-38bc-4ce6-9e70-6c2516fac9b2',
+    example: 'you can get this ID from user that has role DRIVER, table User',
   })
   driver_id: string;
 
@@ -14,7 +14,7 @@ export class CreateDriverOrderHeaderDto {
   @ApiProperty({
     description: 'admin time block ID',
     type: String,
-    example: '448c1e31-03d6-4b82-b6a8-4058103f7cda',
+    example: 'get this ID from AdminTimeBlock table',
   })
   time_block_id: string;
 }

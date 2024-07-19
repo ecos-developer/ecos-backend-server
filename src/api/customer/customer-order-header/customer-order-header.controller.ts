@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
+  MethodNotAllowedException,
 } from '@nestjs/common';
 import { CustomerOrderHeaderService } from './customer-order-header.service';
 import { CreateCustomerOrderHeaderDto } from './dto/create-customer-order-header.dto';
@@ -20,6 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
+import { DriverOrderHeaderService } from 'src/api/admin/driver-order-header/driver-order-header.service';
 
 @ApiTags('CustomerOrderHeader Table (token required)')
 @ApiBearerAuth('access-token')
@@ -28,13 +30,28 @@ import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 export class CustomerOrderHeaderController {
   constructor(
     private readonly customerOrderHeaderService: CustomerOrderHeaderService,
+    private readonly driverOrderHeaderService: DriverOrderHeaderService,
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'insert customer order header' })
+  @ApiOperation({
+    summary: 'Insert customer order header',
+    description: `
+    - This endpoint inserts a new customer order header
+    - It validate that the corresponding DriverOrderHeader is approved by an admin before creating the customer order
+    `,
+  })
   async create(
     @Body() createCustomerOrderHeaderDto: CreateCustomerOrderHeaderDto,
   ) {
+    const driverOrderHeader = await this.driverOrderHeaderService.findOne(
+      createCustomerOrderHeaderDto.order_id,
+    );
+    if (!driverOrderHeader.is_admin_approved) {
+      throw new MethodNotAllowedException(
+        `DriverOrderHeader must be approved by admin first! status order: ${driverOrderHeader.is_admin_approved}`,
+      );
+    }
     const newCustomerORder = await this.customerOrderHeaderService.create(
       createCustomerOrderHeaderDto,
     );
