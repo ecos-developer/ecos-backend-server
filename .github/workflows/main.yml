@@ -52,7 +52,7 @@ jobs:
           script: |
             mkdir /project/ecos/ecos-backend-server
             cd /project/ecos/ecos-backend-server
-            wget -O docker-compose-server.yml https://raw.githubusercontent.com/ecos-developer/ecos-backend-server/main/docker-compose-server.yml?token=GHSAT0AAAAAACUB2BQ66IKVZLLJ7KFJR36OZUZ6BAQ
+            wget -O docker-compose-server.yml https://raw.githubusercontent.com/ecos-developer/ecos-backend-server/main/docker-compose-server.yml
 
   deploy:
     runs-on: ubuntu-latest
