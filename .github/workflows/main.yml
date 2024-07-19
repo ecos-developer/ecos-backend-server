@@ -38,22 +38,6 @@ jobs:
           docker-compose build
           docker-compose push
 
-  pull_docker_compose:
-    runs-on: ubuntu-latest
-    name: pull docker compose from github repository
-    needs: push_to_registry
-    steps:
-      - name: connect to private VPS using SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            mkdir /project/ecos/ecos-backend-server
-            cd /project/ecos/ecos-backend-server
-            wget -O docker-compose-server.yml https://raw.githubusercontent.com/ecos-developer/ecos-backend-server/main/docker-compose-server.yml
-
   deploy:
     runs-on: ubuntu-latest
     name: Continuous Deployment to Private VPS
