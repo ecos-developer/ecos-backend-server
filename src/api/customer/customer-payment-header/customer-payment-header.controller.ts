@@ -41,7 +41,7 @@ export class CustomerPaymentHeaderController {
   @ApiOperation({ summary: 'Insert new customer payment' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-    description: 'Endpoint for customer, driver, and admin detail information',
+    description: 'Endpoint for create new PaymentHeader',
     type: CreateCustomerPaymentHeaderDto,
   })
   @UsePipes(new CustomerPaymentHeaderPipe())
@@ -73,7 +73,7 @@ export class CustomerPaymentHeaderController {
     name: 'customer_payment_id',
     description: 'customer_order_id for the customer order',
     type: String,
-    example: 'aa1f9715-b276-4154-95bf-6466afa6886c',
+    example: 'get this ID from PaymentHeader table',
   })
   async findOne(@Param('customer_payment_id') id: string) {
     const findCustomerPayment =
@@ -81,14 +81,30 @@ export class CustomerPaymentHeaderController {
     return new HttpException(findCustomerPayment, HttpStatus.CREATED);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
+  @Patch(':customer_payment_id')
+  @ApiParam({
+    name: 'customer_payment_id',
+    description: 'customer_order_id for the customer order',
+    type: String,
+    example: 'get this ID from PaymentHeader table',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Endpoint for update PaymentHeader',
+    type: UpdateCustomerPaymentHeaderDto,
+  })
+  @UsePipes(new CustomerPaymentHeaderPipe())
+  @UseInterceptors(FileInterceptor('payment_proof_image_file'))
+  async update(
+    @Param('customer_payment_id') id: string,
     @Body() updateCustomerPaymentHeaderDto: UpdateCustomerPaymentHeaderDto,
+    @UploadedFile() payment_proof_image_file: Express.Multer.File,
   ) {
-    return this.customerPaymentHeaderService.update(
-      +id,
+    const updatePaymentHeader = await this.customerPaymentHeaderService.update(
+      id,
+      payment_proof_image_file,
       updateCustomerPaymentHeaderDto,
     );
+    return new HttpException(updatePaymentHeader, HttpStatus.CREATED);
   }
 }

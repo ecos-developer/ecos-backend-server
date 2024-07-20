@@ -87,14 +87,22 @@ export class CustomerPaymentHeaderService {
     return findCustomerPayment;
   }
 
-  update(
-    id: number,
+  async update(
+    customer_payment_id: string,
+    payment_proof_image_file: Express.Multer.File,
     updateCustomerPaymentHeaderDto: UpdateCustomerPaymentHeaderDto,
   ) {
-    return `This action updates a #${id} customerPaymentHeader`;
-  }
+    const image_name = await this.imageUpload(payment_proof_image_file);
+    updateCustomerPaymentHeaderDto.payment_proof_image = image_name;
 
-  remove(id: number) {
-    return `This action removes a #${id} customerPaymentHeader`;
+    const updatePaymentHeader = await this.prisma.paymentHeader.update({
+      where: {
+        customer_payment_id,
+      },
+      data: {
+        ...updateCustomerPaymentHeaderDto,
+      },
+    });
+    return updatePaymentHeader;
   }
 }
