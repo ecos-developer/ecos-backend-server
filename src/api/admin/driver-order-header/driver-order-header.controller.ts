@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
+  MethodNotAllowedException,
 } from '@nestjs/common';
 import { DriverOrderHeaderService } from './driver-order-header.service';
 import { CreateDriverOrderHeaderDto } from './dto/create-driver-order-header.dto';
@@ -33,6 +34,17 @@ export class DriverOrderHeaderController {
   @Post()
   @ApiOperation({ summary: 'insert driver order header' })
   async create(@Body() createDriverOrderHeaderDto: CreateDriverOrderHeaderDto) {
+    const driverOrderHeader = await this.driverOrderHeaderService.findByPairs(
+      createDriverOrderHeaderDto.driver_id,
+      createDriverOrderHeaderDto.time_block_id,
+    );
+
+    if(driverOrderHeader) {
+      throw new MethodNotAllowedException(
+        `driver ${createDriverOrderHeaderDto.driver_id} is already book this admin time block! Duplicate pairs driver_id and time_block_id detected!`
+      )
+    }
+
     const newDriverOrderHeader = await this.driverOrderHeaderService.create(
       createDriverOrderHeaderDto,
     );

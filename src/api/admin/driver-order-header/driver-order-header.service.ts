@@ -40,6 +40,16 @@ export class DriverOrderHeaderService {
     return allDriverOrderHeader;
   }
 
+  async findByPairs(driver_id: string, time_block_id: string) {
+    const driverOrderHeader = await this.prisma.driverOrderHeader.findFirst({
+      where: {
+        driver_id,
+        time_block_id,
+      },
+    });
+    return driverOrderHeader;
+  }
+
   async findOne(id: string) {
     const driverOrderById = await this.prisma.driverOrderHeader.findFirst({
       where: {

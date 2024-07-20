@@ -69,14 +69,6 @@ export class CustomerOrderHeaderService {
           order_id: order_id,
           user_id: user_id,
         },
-        include:{
-          user:{
-            include:{
-              customer_detail:true,
-              user_detail:true
-            }
-          }
-        }
       });
     return findCustomerOrderHeader;
   }
