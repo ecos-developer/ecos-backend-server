@@ -60,7 +60,6 @@ export class CustomerPaymentHeaderService {
             },
           },
         },
-        calculate_payment: true,
       },
     });
     return allCustomerPayment;
@@ -82,7 +81,6 @@ export class CustomerPaymentHeaderService {
             },
           },
         },
-        calculate_payment: true,
       },
     });
     return findCustomerPayment;

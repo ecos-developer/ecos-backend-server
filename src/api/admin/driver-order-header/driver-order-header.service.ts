@@ -22,12 +22,13 @@ export class DriverOrderHeaderService {
   async findAll() {
     const allDriverOrderHeader = await this.prisma.driverOrderHeader.findMany({
       include: {
-        user: {
+        customer_order_header: {
           include: {
-            user_detail: true,
-            driver_detail: {
+            payment_header: true,
+            user: {
               include: {
-                payment: true,
+                user_detail: true,
+                customer_detail: true,
               },
             },
           },
@@ -45,18 +46,18 @@ export class DriverOrderHeaderService {
         order_id: id,
       },
       include: {
-        user: true,
-        admin_time_block: true,
         customer_order_header: {
           include: {
+            payment_header: true,
             user: {
               include: {
-                customer_detail: true,
                 user_detail: true,
+                customer_detail: true,
               },
             },
           },
         },
+        admin_time_block: true,
       },
     });
 

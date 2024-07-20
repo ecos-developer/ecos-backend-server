@@ -53,7 +53,7 @@ export class CustomerOrderHeaderController {
         `DriverOrderHeader must be approved by admin first! status order: ${driverOrderHeader.is_admin_approved}`,
       );
     }
-    
+
     const findDuplicateCustomerOrderHeader =
       await this.customerOrderHeaderService.findByPairs(
         createCustomerOrderHeaderDto.user_id,
@@ -61,7 +61,7 @@ export class CustomerOrderHeaderController {
       );
     if (findDuplicateCustomerOrderHeader) {
       throw new MethodNotAllowedException(
-        `customer ${driverOrderHeader.user.email} is already book this driver! Duplicate pairs order_id and user_id detected!`,
+        `customer ${createCustomerOrderHeaderDto.user_id} is already book this driver! Duplicate pairs order_id and user_id detected!`,
       );
     }
     const newCustomerORder = await this.customerOrderHeaderService.create(

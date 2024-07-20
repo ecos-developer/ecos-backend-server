@@ -109,23 +109,22 @@ model DriverOrderHeader {
   driver_id             String
   time_block_id         String
   is_admin_approved     Boolean
-  customer_order_header CustomerOrderHeader[]
+  customer_order_header CustomerOrderHeader[] 
   user                  User?                 @relation(fields: [driver_id], references: [user_id])
   room_chat             RoomChat?
   admin_time_block      AdminTimeBlock?       @relation(fields: [time_block_id], references: [time_block_id])
-  calculate_payment     CalculatePayment?
   created_at            DateTime              @default(now())
   updated_at            DateTime              @updatedAt
 }
 
-model CustomerOrderHeader {
+model CustomerOrderHeader { 
   customer_order_id                 String                          @id @default(uuid())
   order_id                          String
   user_id                           String
   extra_passenger                   Int
   driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id])
   user                              User?                           @relation(fields: [user_id], references: [user_id])
-  payment_header                    PaymentHeader[]
+  payment_header                    PaymentHeader?
   realtime_customer_each_day_pickup RealtimeCustomerEachDayPickup[]
   created_at                        DateTime                        @default(now())
 }
@@ -159,17 +158,6 @@ model AdminTimeBlock {
   created_at          DateTime            @default(now())
 }
 
-model CalculatePayment {
-  calculate_payment_id String             @id @default(uuid())
-  order_id             String             @unique
-  customer_payment_id  String             @unique
-  payment_total        Int
-  driver_order_header  DriverOrderHeader? @relation(fields: [order_id], references: [order_id])
-  payment_header       PaymentHeader?     @relation(fields: [customer_payment_id], references: [customer_payment_id])
-  created_at           DateTime           @default(now())
-  updated_at           DateTime           @updatedAt
-}
-
 model PaymentHeader {
   customer_payment_id   String               @id @default(uuid())
   customer_order_id     String               @unique
@@ -177,7 +165,6 @@ model PaymentHeader {
   payment_total         Int
   is_admin_approved     Boolean
   expired_at            DateTime
-  calculate_payment     CalculatePayment?
   customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id])
   created_at            DateTime             @default(now())
   updated_at            DateTime             @updatedAt

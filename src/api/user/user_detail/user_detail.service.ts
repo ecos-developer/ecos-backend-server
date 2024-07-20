@@ -21,6 +21,12 @@ export class UserDetailService {
       },
       include: {
         user_detail: true,
+        driver_detail:{
+          include:{
+            payment:true
+          }
+        },
+        customer_detail:true
       },
     });
 
