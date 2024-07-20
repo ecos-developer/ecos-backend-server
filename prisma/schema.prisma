@@ -124,7 +124,7 @@ model CustomerOrderHeader {
   extra_passenger                   Int
   driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id])
   user                              User?                           @relation(fields: [user_id], references: [user_id])
-  payment_header                    PaymentHeader?
+  payment_header                    PaymentHeader[]
   realtime_customer_each_day_pickup RealtimeCustomerEachDayPickup[]
   created_at                        DateTime                        @default(now())
 }
@@ -160,7 +160,7 @@ model AdminTimeBlock {
 
 model PaymentHeader {
   customer_payment_id   String               @id @default(uuid())
-  customer_order_id     String               @unique
+  customer_order_id     String               
   payment_proof_image   String?
   payment_total         Int
   is_admin_approved     Boolean

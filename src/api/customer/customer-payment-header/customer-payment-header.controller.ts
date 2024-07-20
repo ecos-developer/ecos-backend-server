@@ -63,7 +63,8 @@ export class CustomerPaymentHeaderController {
 
   @Get()
   async findAll() {
-    const allCustomerPayment = await this.customerPaymentHeaderService.findAll();
+    const allCustomerPayment =
+      await this.customerPaymentHeaderService.findAll();
     return new HttpException(allCustomerPayment, HttpStatus.CREATED);
   }
 

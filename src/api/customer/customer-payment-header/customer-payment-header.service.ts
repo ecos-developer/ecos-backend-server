@@ -18,6 +18,7 @@ export class CustomerPaymentHeaderService {
   ) {
     const image_name = await this.imageUpload(payment_proof_image_file);
     createCustomerPaymentHeaderDto.payment_proof_image = image_name;
+
     const expired_at = new Date(new Date().getTime() + 12 * 60 * 60 * 1000);
     const newPaymentHeader = await this.prisma.paymentHeader.create({
       data: {
@@ -33,12 +34,12 @@ export class CustomerPaymentHeaderService {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const FormData = require('form-data');
     const formData = new FormData();
-    formData.append('profile_image_file', Buffer.from(file.buffer), {
+    formData.append('payment_proof_image', Buffer.from(file.buffer), {
       filename: file.originalname,
     });
 
     const imageUpload = await axios.post(
-      `${this.env.getConfigValues().IMAGE_SERVER_ENDPOINT}/upload-image/user-detail`,
+      `${this.env.getConfigValues().IMAGE_SERVER_ENDPOINT}/upload-image/payment-header`,
       formData,
       {
         headers: formData.getHeaders(),
