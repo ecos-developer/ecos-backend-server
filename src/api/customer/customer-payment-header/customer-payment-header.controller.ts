@@ -8,10 +8,6 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
-  UseInterceptors,
-  UploadedFile,
-  UsePipes,
-  BadRequestException,
 } from '@nestjs/common';
 import { CustomerPaymentHeaderService } from './customer-payment-header.service';
 import { CreateCustomerPaymentHeaderDto } from './dto/create-customer-payment-header.dto';
@@ -19,14 +15,11 @@ import { UpdateCustomerPaymentHeaderDto } from './dto/update-customer-payment-he
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { CustomerPaymentHeaderPipe } from './pipe/customer-payment-header.pipe';
 
 @ApiTags('CustomerPaymentHeader Table (token required)')
 @ApiBearerAuth('access-token')
@@ -39,23 +32,14 @@ export class CustomerPaymentHeaderController {
 
   @Post()
   @ApiOperation({ summary: 'Insert new customer payment' })
-  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Endpoint for create new PaymentHeader',
     type: CreateCustomerPaymentHeaderDto,
   })
-  @UsePipes(new CustomerPaymentHeaderPipe())
-  @UseInterceptors(FileInterceptor('payment_proof_image_file'))
   async create(
     @Body() createCustomerPaymentHeaderDto: CreateCustomerPaymentHeaderDto,
-    @UploadedFile() payment_proof_image_file: Express.Multer.File,
   ) {
-    if (payment_proof_image_file.size === undefined) {
-      throw new BadRequestException('Uploaded file is empty.');
-    }
-
     const newPaymentHeader = await this.customerPaymentHeaderService.create(
-      payment_proof_image_file,
       createCustomerPaymentHeaderDto,
     );
     return new HttpException(newPaymentHeader, HttpStatus.CREATED);
@@ -88,21 +72,16 @@ export class CustomerPaymentHeaderController {
     type: String,
     example: 'get this ID from PaymentHeader table',
   })
-  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Endpoint for update PaymentHeader',
     type: UpdateCustomerPaymentHeaderDto,
   })
-  @UsePipes(new CustomerPaymentHeaderPipe())
-  @UseInterceptors(FileInterceptor('payment_proof_image_file'))
   async update(
     @Param('customer_payment_id') id: string,
     @Body() updateCustomerPaymentHeaderDto: UpdateCustomerPaymentHeaderDto,
-    @UploadedFile() payment_proof_image_file: Express.Multer.File,
   ) {
     const updatePaymentHeader = await this.customerPaymentHeaderService.update(
       id,
-      payment_proof_image_file,
       updateCustomerPaymentHeaderDto,
     );
     return new HttpException(updatePaymentHeader, HttpStatus.CREATED);

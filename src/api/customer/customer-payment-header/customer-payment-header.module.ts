@@ -4,11 +4,10 @@ import { CustomerPaymentHeaderController } from './customer-payment-header.contr
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/api/auth/strategies/jwt.strategy';
-import { EnvService } from 'src/api/env/env.service';
 
 @Module({
   imports: [PrismaModule, PassportModule],
   controllers: [CustomerPaymentHeaderController],
-  providers: [CustomerPaymentHeaderService, JwtStrategy, EnvService],
+  providers: [CustomerPaymentHeaderService, JwtStrategy],
 })
 export class CustomerPaymentHeaderModule {}

@@ -1,27 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCustomerPaymentHeaderDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
     description: 'get the ID from CustomerOrderHeader table',
-    example: 'test',
+    example: 'Get from CustomerOrderHeader table!',
   })
   customer_order_id: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    type: 'string',
-    format: 'binary',
+    example: 'INSERT IMAGE AT IMAGE SERVER FIRST!',
     description: 'payment proof image',
-    required: false,
   })
-  @Transform(({ value }) => (value === '' ? null : value))
-  payment_proof_image_file: string;
-
   payment_proof_image: string;
 
   @IsNumber()
@@ -30,6 +24,5 @@ export class CreateCustomerPaymentHeaderDto {
     description: 'Payment total',
     example: 6000000,
   })
-  @Transform(({ value }) => (value === '' ? null : parseInt(value, 10)))
   payment_total: number;
 }
