@@ -14,7 +14,11 @@ export class DriverVehicleDetailService {
         user_id: user.user_id,
       },
       include: {
-        driver_detail: true,
+        driver_detail: {
+          include: {
+            payment: true,
+          },
+        },
         user_detail: true,
       },
     });
