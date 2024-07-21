@@ -23,7 +23,6 @@ import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseUserDetailPipe } from './pipe/parse_user_detail.pipe';
-import { UserDetailUpload } from './upload/user_detail.upload';
 
 @ApiTags('user detail (token required, all role authorized)')
 @ApiBearerAuth('access-token')
@@ -42,11 +41,7 @@ export class UserDetailController {
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UsePipes(new ParseUserDetailPipe())
-  @UseInterceptors(
-    FileInterceptor('profile_image_file', {
-      storage: UserDetailUpload.storageOptions,
-    }),
-  )
+  @UseInterceptors(FileInterceptor('profile_image_file'))
   @ApiOperation({ summary: 'update user detail by token (optional field)' })
   @ApiBody({
     description: 'endpoint for customer, driver, and admin detail information',
