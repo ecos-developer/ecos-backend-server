@@ -1,34 +1,97 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  HttpException,
+  HttpStatus,
+  MethodNotAllowedException,
+} from '@nestjs/common';
 import { RoomChatService } from './room-chat.service';
 import { CreateRoomChatDto } from './dto/create-room-chat.dto';
 import { UpdateRoomChatDto } from './dto/update-room-chat.dto';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 
+@ApiTags('RoomChat Table (token required)')
+@ApiBearerAuth('access-token')
 @Controller('room-chat')
 export class RoomChatController {
   constructor(private readonly roomChatService: RoomChatService) {}
 
   @Post()
-  create(@Body() createRoomChatDto: CreateRoomChatDto) {
-    return this.roomChatService.create(createRoomChatDto);
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'create new room chat',
+    description: `
+      - each DriverOrderHeader only has one RoomChat
+    `,
+  })
+  @ApiBody({
+    description: 'Create new room chat',
+    type: CreateRoomChatDto,
+  })
+  async create(@Body() createRoomChatDto: CreateRoomChatDto) {
+    const newRoomChat = await this.roomChatService.create(createRoomChatDto);
+    return new HttpException(newRoomChat, HttpStatus.OK);
   }
 
   @Get()
-  findAll() {
-    return this.roomChatService.findAll();
+  @ApiOperation({
+    summary: 'get all room chat',
+  })
+  async findAll() {
+    const allRoomChat = await this.roomChatService.findAll();
+    return new HttpException(allRoomChat, HttpStatus.OK);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roomChatService.findOne(+id);
+  @Get(':order_id')
+  @ApiParam({
+    name: 'order_id',
+    description: 'from DriverOrderHeader',
+    type: String,
+    example: 'get this ID from PaymentHeader table',
+  })
+  async findOne(@Param('order_id') id: string) {
+    const findRoomChat = await this.roomChatService.findOne(id);
+    return new HttpException(findRoomChat, HttpStatus.OK);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomChatDto: UpdateRoomChatDto) {
-    return this.roomChatService.update(+id, updateRoomChatDto);
-  }
+  @Patch(':order_id')
+  @ApiParam({
+    name: 'order_id',
+    description: 'from DriverOrderHeader',
+    type: String,
+    example: 'get this ID from PaymentHeader table',
+  })
+  @ApiBody({
+    description: 'Update room chat by id',
+    type: UpdateRoomChatDto,
+  })
+  async update(
+    @Param('order_id') id: string,
+    @Body() updateRoomChatDto: UpdateRoomChatDto,
+  ) {
+    const findRoomChat = await this.roomChatService.findOne(id);
+    if (!findRoomChat) {
+      throw new MethodNotAllowedException(
+        `room chat with id ${id} is not found!`,
+      );
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roomChatService.remove(+id);
+    const updateRoomChat = await this.roomChatService.update(
+      id,
+      updateRoomChatDto,
+    );
+    return new HttpException(updateRoomChat, HttpStatus.OK);
   }
 }

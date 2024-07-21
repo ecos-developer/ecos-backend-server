@@ -1,26 +1,78 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRoomChatDto } from './dto/create-room-chat.dto';
 import { UpdateRoomChatDto } from './dto/update-room-chat.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class RoomChatService {
-  create(createRoomChatDto: CreateRoomChatDto) {
-    return 'This action adds a new roomChat';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(createRoomChatDto: CreateRoomChatDto) {
+    const newRoomChat = await this.prisma.roomChat.create({
+      data: {
+        ...createRoomChatDto,
+      },
+    });
+    return newRoomChat;
   }
 
-  findAll() {
-    return `This action returns all roomChat`;
+  async findAll() {
+    const allRoomChat = await this.prisma.roomChat.findMany({
+      include: {
+        chat_message: true,
+        driver_order_header: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+                driver_detail: {
+                  include: {
+                    payment: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return allRoomChat;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} roomChat`;
+  async findOne(order_id: string) {
+    const findRoomChat = await this.prisma.roomChat.findFirst({
+      where: {
+        order_id,
+      },
+      include: {
+        chat_message: true,
+        driver_order_header: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+                driver_detail: {
+                  include: {
+                    payment: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return findRoomChat;
   }
 
-  update(id: number, updateRoomChatDto: UpdateRoomChatDto) {
-    return `This action updates a #${id} roomChat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} roomChat`;
+  async update(order_id: string, updateRoomChatDto: UpdateRoomChatDto) {
+    const updateRoomChat = await this.prisma.roomChat.update({
+      where: {
+        order_id,
+      },
+      data: {
+        ...updateRoomChatDto,
+      },
+    });
+    return updateRoomChat;
   }
 }
