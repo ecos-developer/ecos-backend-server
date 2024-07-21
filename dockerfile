@@ -60,8 +60,5 @@ FROM node:18-alpine As production
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
-# Copy the public directory
-COPY --chown=node:node --from=build /usr/src/app/public ./public
-
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
