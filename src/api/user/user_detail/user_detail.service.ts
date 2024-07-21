@@ -10,7 +10,6 @@ import { UserDetailDto } from './dto/user_detail.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { EnvService } from 'src/api/env/env.service';
-import axios from 'axios';
 
 @Injectable()
 export class UserDetailService {
@@ -43,35 +42,9 @@ export class UserDetailService {
     return new HttpException(userDetail, HttpStatus.CREATED);
   }
 
-  async imageUpload(file: Express.Multer.File) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const FormData = require('form-data');
-    const formData = new FormData();
-    formData.append('profile_image_file', Buffer.from(file.buffer), {
-      filename: file.originalname,
-    });
-
-    const imageUpload = await axios.post(
-      `${this.env.getConfigValues().IMAGE_SERVER_ENDPOINT}/upload-image/user-detail`,
-      formData,
-      {
-        headers: formData.getHeaders(),
-      },
-    );
-    return imageUpload.data;
-  }
-
-  async update(
-    user: User,
-    profile_image_file: Express.Multer.File,
-    userDetailDto: UserDetailDto,
-  ) {
+  async update(user: User, userDetailDto: UserDetailDto) {
     console.log(userDetailDto);
     try {
-      if (profile_image_file !== undefined) {
-        userDetailDto.profile_image =
-          await this.imageUpload(profile_image_file);
-      }
       const checkUser = await this.prisma.user.findUnique({
         where: {
           user_id: user.user_id,

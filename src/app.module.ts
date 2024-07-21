@@ -11,6 +11,8 @@ import { AdminTimeBlockModule } from './api/admin/admin-time-block/admin-time-bl
 import { DriverOrderHeaderModule } from './api/admin/driver-order-header/driver-order-header.module';
 import { CustomerOrderHeaderModule } from './api/customer/customer-order-header/customer-order-header.module';
 import { CustomerPaymentHeaderModule } from './api/customer/customer-payment-header/customer-payment-header.module';
+import { RoomChatModule } from './api/chat/room-chat/room-chat.module';
+import { ChatMessageModule } from './api/chat/chat-message/chat-message.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { CustomerPaymentHeaderModule } from './api/customer/customer-payment-hea
     AdminApprovalModule,
     AdminTimeBlockModule,
     DriverOrderHeaderModule,
+    RoomChatModule,
+    ChatMessageModule,
   ],
 })
 export class AppModule {}

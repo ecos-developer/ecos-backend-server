@@ -44,17 +44,10 @@ export class UserDetailDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'User profile image input',
+    example: 'INSERT AT THE IMAGE SERVER FIRST!',
+    description: 'profile picture name',
     required: false,
   })
-  @Transform(({ value }) => (value === '' ? null : value))
-  profile_image_file?: string;
-
-  @IsOptional()
-  @IsString()
-  @Transform(({ value }) => (value === '' ? null : value))
   profile_image?: string;
 
   @IsOptional()
@@ -64,12 +57,10 @@ export class UserDetailDto {
     description: 'The street of the user',
     required: false,
   })
-  @Transform(({ value }) => (value === '' ? null : value))
   street?: string;
 
   @IsOptional()
   @IsNumber()
-  @Transform(({ value }) => (value === '' ? null : parseInt(value, 10)))
   @ApiProperty({
     example: 5,
     description: 'The grade of the user',
@@ -79,9 +70,6 @@ export class UserDetailDto {
 
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) =>
-    value === '' ? null : value === 'true' || value === true,
-  )
   @ApiProperty({
     example: true,
     description: 'Is admin approved',
@@ -91,9 +79,6 @@ export class UserDetailDto {
 
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) =>
-    value === '' ? null : value === 'true' || value === true,
-  )
   @ApiProperty({
     example: true,
     description: 'Is email verified',
@@ -103,9 +88,6 @@ export class UserDetailDto {
 
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) =>
-    value === '' ? null : value === 'true' || value === true,
-  )
   @ApiProperty({
     example: true,
     description: 'Is phone verified',
