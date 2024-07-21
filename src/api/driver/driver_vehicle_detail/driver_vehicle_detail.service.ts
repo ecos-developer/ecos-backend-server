@@ -9,10 +9,15 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Role, User } from '@prisma/client';
 import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
+import axios from 'axios';
+import { EnvService } from 'src/api/env/env.service';
 
 @Injectable()
 export class DriverVehicleDetailService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly env: EnvService,
+  ) {}
 
   async findOne(user: User) {
     if (user.role !== Role.DRIVER) {
@@ -39,20 +44,15 @@ export class DriverVehicleDetailService {
 
   async create(
     user: User,
-    files: Array<Express.Multer.File>,
+    vehicle_image_file: Express.Multer.File,
     driverVehicleDetailDto: DriverVehicleDetailDto,
   ) {
-    if (!files) {
+    if (vehicle_image_file.size === undefined) {
       throw new BadRequestException(
-        'No files uploaded [vehicle_image, sim, stnk, kk, and ktp]',
+        'No files uploaded! expected [vehicle_image_file]',
       );
     }
-    const fileArray = Object.keys(files).map((key) => files[key]);
-    if (fileArray.length !== 5) {
-      throw new BadRequestException(
-        'all of this file field is required!` [vehicle_image, sim, stnk, kk, and ktp]',
-      );
-    }
+
     const currDriver = await this.prisma.user.findUnique({
       where: {
         user_id: user.user_id,
@@ -71,25 +71,10 @@ export class DriverVehicleDetailService {
       );
     }
 
-    const vehicle_image_file = fileArray.find(
-      (file) => file.fieldname === 'vehicle_image_file',
-    );
-    const ktp_file = fileArray.find((file) => file.fieldname === 'ktp_file');
-    const sim_file = fileArray.find((file) => file.fieldname === 'sim_file');
-    const stnk_file = fileArray.find((file) => file.fieldname === 'stnk_file');
-    const kk_file = fileArray.find((file) => file.fieldname === 'kk_file');
-
-    driverVehicleDetailDto.vehicle_image = vehicle_image_file.filename;
-    driverVehicleDetailDto.kk = kk_file.filename;
-    driverVehicleDetailDto.sim = sim_file.filename;
-    driverVehicleDetailDto.stnk = stnk_file.filename;
-    driverVehicleDetailDto.ktp = ktp_file.filename;
+    driverVehicleDetailDto.vehicle_image =
+      await this.imageUpload(vehicle_image_file);
     const createDriverVehicle = await this.prisma.driverDetail.create({
       data: {
-        kk: driverVehicleDetailDto.kk,
-        sim: driverVehicleDetailDto.sim,
-        stnk: driverVehicleDetailDto.stnk,
-        ktp: driverVehicleDetailDto.ktp,
         vehicle_image: driverVehicleDetailDto.vehicle_image,
         vehicle_category: driverVehicleDetailDto.vehicle_category,
         vehicle_model: driverVehicleDetailDto.vehicle_model,
@@ -105,6 +90,24 @@ export class DriverVehicleDetailService {
     });
 
     return new HttpException(createDriverVehicle, HttpStatus.CREATED);
+  }
+
+  async imageUpload(file: Express.Multer.File) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const FormData = require('form-data');
+    const formData = new FormData();
+    formData.append('vehicle_image_file', Buffer.from(file.buffer), {
+      filename: file.originalname,
+    });
+
+    const imageUpload = await axios.post(
+      `${this.env.getConfigValues().IMAGE_SERVER_ENDPOINT}/upload-image/driver-detail`,
+      formData,
+      {
+        headers: formData.getHeaders(),
+      },
+    );
+    return imageUpload.data;
   }
 
   async update(
@@ -141,18 +144,6 @@ export class DriverVehicleDetailService {
         switch (file.fieldname) {
           case 'vehicle_image_file':
             updatedData.vehicle_image = file.filename;
-            break;
-          case 'ktp_file':
-            updatedData.ktp = file.filename;
-            break;
-          case 'sim_file':
-            updatedData.sim = file.filename;
-            break;
-          case 'stnk_file':
-            updatedData.stnk = file.filename;
-            break;
-          case 'kk_file':
-            updatedData.kk = file.filename;
             break;
         }
       });

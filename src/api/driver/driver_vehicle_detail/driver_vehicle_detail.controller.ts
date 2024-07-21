@@ -5,6 +5,7 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -22,7 +23,7 @@ import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
 import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
 import { User } from '@prisma/client';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { DriverVehicleDetailUpload } from './upload/driver_vehicle_detail.upload';
 import { ParseDriverDetailPipe } from './pipe/parse_driver_detail.pipe';
 
@@ -45,11 +46,7 @@ export class DriverVehicleDetailController {
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UsePipes(new ParseDriverDetailPipe())
-  @UseInterceptors(
-    AnyFilesInterceptor({
-      storage: DriverVehicleDetailUpload.storageOptions,
-    }),
-  )
+  @UseInterceptors(FileInterceptor('vehicle_image_file'))
   @ApiOperation({
     summary:
       "create driver's vehicle detail by token (optional field, without payment)",
@@ -60,12 +57,12 @@ export class DriverVehicleDetailController {
   })
   async create(
     @Req() req: Request,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFile() vehicle_image_file: Express.Multer.File,
     @Body() driverVehicleDetailDto: DriverVehicleDetailDto,
   ) {
     return await this.driverVehicleDetailService.create(
       req.user as User,
-      files,
+      vehicle_image_file,
       driverVehicleDetailDto,
     );
   }

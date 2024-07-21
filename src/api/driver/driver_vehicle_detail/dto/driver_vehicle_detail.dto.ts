@@ -14,50 +14,6 @@ export class DriverVehicleDetailDto {
   vehicle_image_file?: string;
   vehicle_image?: string;
 
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'ktp image input',
-    required: false,
-  })
-  ktp_file?: string;
-  ktp?: string;
-
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'sim image input',
-    required: false,
-  })
-  sim_file?: string;
-  sim?: string;
-
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'stnk image input',
-    required: false,
-  })
-  stnk_file?: string;
-  stnk?: string;
-
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'kk image input',
-    required: false,
-  })
-  kk_file?: string;
-  kk?: string;
-
   @IsNotEmpty()
   @IsString()
   @ApiProperty({

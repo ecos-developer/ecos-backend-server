@@ -56,10 +56,6 @@ model UserDetail {
 model DriverDetail {
   user_id              String   @id
   vehicle_image        String
-  ktp                  String
-  sim                  String
-  stnk                 String
-  kk                   String
   vehicle_category     String
   vehicle_model        String
   vehicle_capacity     Int
