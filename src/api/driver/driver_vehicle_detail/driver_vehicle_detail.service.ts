@@ -112,7 +112,7 @@ export class DriverVehicleDetailService {
 
   async update(
     user: User,
-    files: Array<Express.Multer.File>,
+    vehicle_image_file: Express.Multer.File,
     driverVehicleDetailDto: DriverVehicleDetailDto,
   ) {
     const currDriver = await this.prisma.user.findUnique({
@@ -136,17 +136,9 @@ export class DriverVehicleDetailService {
       );
     }
 
-    const updatedData: any = {};
-    const fileArray = Object.keys(files).map((key) => files[key]);
-
-    if (fileArray) {
-      fileArray.forEach((file) => {
-        switch (file.fieldname) {
-          case 'vehicle_image_file':
-            updatedData.vehicle_image = file.filename;
-            break;
-        }
-      });
+    if (vehicle_image_file.size !== undefined) {
+      driverVehicleDetailDto.vehicle_image =
+        await this.imageUpload(vehicle_image_file);
     }
 
     // Update only the provided fields, leaving other fields unchanged
@@ -155,7 +147,9 @@ export class DriverVehicleDetailService {
         user_id: user.user_id,
       },
       data: {
-        ...updatedData,
+        vehicle_image:
+          driverVehicleDetailDto.vehicle_image ||
+          currDriver.driver_detail.vehicle_image, 
         vehicle_category:
           driverVehicleDetailDto.vehicle_category ||
           currDriver.driver_detail.vehicle_category,

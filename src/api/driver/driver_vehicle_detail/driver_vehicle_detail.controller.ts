@@ -71,11 +71,7 @@ export class DriverVehicleDetailController {
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UsePipes(new ParseDriverDetailPipe())
-  @UseInterceptors(
-    AnyFilesInterceptor({
-      storage: DriverVehicleDetailUpload.storageOptions,
-    }),
-  )
+  @UseInterceptors(FileInterceptor('vehicle_image_file'))
   @ApiOperation({
     summary:
       "update driver's vehicle detail by token (optional field, without paymnet)",
@@ -86,12 +82,12 @@ export class DriverVehicleDetailController {
   })
   async update(
     @Req() req: Request,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFile() vehicle_image_file: Express.Multer.File,
     @Body() driverVehicleDetailDto: DriverVehicleDetailDto,
   ) {
     return await this.driverVehicleDetailService.update(
       req.user as User,
-      files,
+      vehicle_image_file,
       driverVehicleDetailDto,
     );
   }
