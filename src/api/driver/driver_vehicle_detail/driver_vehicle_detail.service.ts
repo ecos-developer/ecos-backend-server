@@ -149,7 +149,7 @@ export class DriverVehicleDetailService {
       data: {
         vehicle_image:
           driverVehicleDetailDto.vehicle_image ||
-          currDriver.driver_detail.vehicle_image, 
+          currDriver.driver_detail.vehicle_image,
         vehicle_category:
           driverVehicleDetailDto.vehicle_category ||
           currDriver.driver_detail.vehicle_category,

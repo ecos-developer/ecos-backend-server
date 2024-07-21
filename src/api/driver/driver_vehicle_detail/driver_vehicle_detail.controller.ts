@@ -6,7 +6,6 @@ import {
   Post,
   Req,
   UploadedFile,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -23,8 +22,7 @@ import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
 import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
 import { User } from '@prisma/client';
-import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { DriverVehicleDetailUpload } from './upload/driver_vehicle_detail.upload';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseDriverDetailPipe } from './pipe/parse_driver_detail.pipe';
 
 @ApiTags('driver detail (token required, driver authorized)')
