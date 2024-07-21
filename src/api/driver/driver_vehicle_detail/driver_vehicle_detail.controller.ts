@@ -54,6 +54,7 @@ export class DriverVehicleDetailController {
     description: `
       - validation driver by token
       - validation is driver detail already created
+      - need to insert image first to the image server
     `,
   })
   @ApiBody({
@@ -90,6 +91,10 @@ export class DriverVehicleDetailController {
   @ApiOperation({
     summary:
       "update driver's vehicle detail by token (optional field, without paymnet)",
+    description: `
+      - validation driver by token
+      - validation is driver detail is not created
+    `,
   })
   @ApiBody({
     description: 'intended for driver only',
