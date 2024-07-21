@@ -15,7 +15,7 @@ import { Request } from 'express';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 
-@ApiTags('user detail (token required, all role authorized)')
+@ApiTags('UserDetail Table (token required, all role authorized)')
 @ApiBearerAuth('access-token')
 @Controller('user-detail')
 export class UserDetailController {

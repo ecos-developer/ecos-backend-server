@@ -18,7 +18,7 @@ import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
 import { Role, User } from '@prisma/client';
 import { UpdateDriverVehicleDetailDto } from './dto/update-driver-vehicle-detail.dto';
 
-@ApiTags('driver detail (token required, driver authorized)')
+@ApiTags('DriverDetail table (token required, driver authorized)')
 @ApiBearerAuth('access-token')
 @Controller('driver-vehicle-detail')
 export class DriverVehicleDetailController {
