@@ -1,14 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNumber, IsNotEmpty, IsString } from 'class-validator';
 
 export class DriverVehicleDetailDto {
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
     example: 'INSERT FIRST TO IMAGE SERVER!',
     description: 'vehicle image name',
-    required: false,
   })
   vehicle_image: string;
 
@@ -17,7 +16,6 @@ export class DriverVehicleDetailDto {
   @ApiProperty({
     example: 'jeep',
     description: 'driver vehicle category',
-    required: false,
   })
   vehicle_category: string;
 
@@ -26,14 +24,13 @@ export class DriverVehicleDetailDto {
   @ApiProperty({
     example: 'old fashioned jeep',
     description: 'The name of the user',
-    required: false,
   })
   vehicle_model: string;
 
   @IsNotEmpty()
   @IsNumber()
   @Transform(({ value }) => parseInt(value))
-  @ApiProperty({ example: 3, description: 'vehicle capacity', required: false })
+  @ApiProperty({ example: 3, description: 'vehicle capacity' })
   vehicle_capacity: number;
 
   @IsNotEmpty()
@@ -41,7 +38,6 @@ export class DriverVehicleDetailDto {
   @ApiProperty({
     example: '6961',
     description: 'vehicle number plate',
-    required: false,
   })
   vehicle_number_plate: string;
 }

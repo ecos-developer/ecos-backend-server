@@ -8,25 +8,15 @@ import {
   Patch,
   Post,
   Req,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
-  UsePipes,
 } from '@nestjs/common';
 import { DriverVehicleDetailService } from './driver_vehicle_detail.service';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
 import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
 import { Role, User } from '@prisma/client';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ParseDriverDetailPipe } from './pipe/parse_driver_detail.pipe';
+import { UpdateDriverVehicleDetailDto } from './dto/update-driver-vehicle-detail.dto';
 
 @ApiTags('driver detail (token required, driver authorized)')
 @ApiBearerAuth('access-token')
@@ -45,7 +35,6 @@ export class DriverVehicleDetailController {
     `,
   })
   async findOne(@Req() req: Request) {
-    // DRIVER ONLY
     const user = req.user as User;
     if (user.role !== Role.DRIVER) {
       throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
@@ -98,9 +87,6 @@ export class DriverVehicleDetailController {
 
   @Patch('')
   @UseGuards(JwtAuthGuard)
-  @ApiConsumes('multipart/form-data')
-  @UsePipes(new ParseDriverDetailPipe())
-  @UseInterceptors(FileInterceptor('vehicle_image_file'))
   @ApiOperation({
     summary:
       "update driver's vehicle detail by token (optional field, without paymnet)",
@@ -111,13 +97,25 @@ export class DriverVehicleDetailController {
   })
   async update(
     @Req() req: Request,
-    @UploadedFile() vehicle_image_file: Express.Multer.File,
-    @Body() driverVehicleDetailDto: DriverVehicleDetailDto,
+    @Body() updateDriverVehicleDetailDto: UpdateDriverVehicleDetailDto,
   ) {
-    return await this.driverVehicleDetailService.update(
+    const user = req.user as User;
+    if (user.role !== Role.DRIVER) {
+      throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
+    }
+
+    const findDriverDetail =
+      await this.driverVehicleDetailService.findOne(user);
+    if (!findDriverDetail.driver_detail) {
+      throw new MethodNotAllowedException(
+        `User ${user.email} has not created driver details yet. You need to perform create driver detail!`,
+      );
+    }
+
+    const updateDriverVehicle = await this.driverVehicleDetailService.update(
       req.user as User,
-      vehicle_image_file,
-      driverVehicleDetailDto,
+      updateDriverVehicleDetailDto,
     );
+    return new HttpException(updateDriverVehicle, HttpStatus.OK);
   }
 }
