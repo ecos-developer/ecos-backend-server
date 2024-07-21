@@ -1,6 +1,5 @@
 import { Role } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import {
   IsNumber,
   IsOptional,
@@ -17,7 +16,6 @@ export class UserDetailDto {
     description: 'The name of the user',
     required: false,
   })
-  @Transform(({ value }) => (value === '' ? null : value))
   name?: string;
 
   @IsOptional()
@@ -27,7 +25,6 @@ export class UserDetailDto {
     description: 'The phone number of the user',
     required: false,
   })
-  @Transform(({ value }) => (value === '' ? null : value))
   phone?: string;
 
   @IsOptional()
@@ -38,7 +35,6 @@ export class UserDetailDto {
     required: false,
     enum: Role,
   })
-  @Transform(({ value }) => (value === '' ? null : value))
   role?: Role;
 
   @IsOptional()

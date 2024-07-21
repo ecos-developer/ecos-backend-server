@@ -6,13 +6,11 @@ export class DriverVehicleDetailDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'vehicle image input',
+    example: 'INSERT FIRST TO IMAGE SERVER!',
+    description: 'vehicle image name',
     required: false,
   })
-  vehicle_image_file?: string;
-  vehicle_image?: string;
+  vehicle_image: string;
 
   @IsNotEmpty()
   @IsString()
@@ -21,7 +19,7 @@ export class DriverVehicleDetailDto {
     description: 'driver vehicle category',
     required: false,
   })
-  vehicle_category?: string;
+  vehicle_category: string;
 
   @IsNotEmpty()
   @IsString()
@@ -30,13 +28,13 @@ export class DriverVehicleDetailDto {
     description: 'The name of the user',
     required: false,
   })
-  vehicle_model?: string;
+  vehicle_model: string;
 
   @IsNotEmpty()
   @IsNumber()
   @Transform(({ value }) => parseInt(value))
   @ApiProperty({ example: 3, description: 'vehicle capacity', required: false })
-  vehicle_capacity?: number;
+  vehicle_capacity: number;
 
   @IsNotEmpty()
   @IsString()
@@ -45,5 +43,5 @@ export class DriverVehicleDetailDto {
     description: 'vehicle number plate',
     required: false,
   })
-  vehicle_number_plate?: string;
+  vehicle_number_plate: string;
 }

@@ -2,6 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
+  MethodNotAllowedException,
   Patch,
   Post,
   Req,
@@ -21,7 +24,7 @@ import {
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
 import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseDriverDetailPipe } from './pipe/parse_driver_detail.pipe';
 
@@ -35,19 +38,34 @@ export class DriverVehicleDetailController {
 
   @Get('')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'get driver detail by token' })
+  @ApiOperation({
+    summary: 'get driver detail by token',
+    description: `
+      - validation driver by token
+    `,
+  })
   async findOne(@Req() req: Request) {
-    return await this.driverVehicleDetailService.findOne(req.user as User);
+    // DRIVER ONLY
+    const user = req.user as User;
+    if (user.role !== Role.DRIVER) {
+      throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
+    }
+
+    const driverDetail = await this.driverVehicleDetailService.findOne(
+      req.user as User,
+    );
+    return new HttpException(driverDetail, HttpStatus.CREATED);
   }
 
   @Post('')
   @UseGuards(JwtAuthGuard)
-  @ApiConsumes('multipart/form-data')
-  @UsePipes(new ParseDriverDetailPipe())
-  @UseInterceptors(FileInterceptor('vehicle_image_file'))
   @ApiOperation({
     summary:
       "create driver's vehicle detail by token (optional field, without payment)",
+    description: `
+      - validation driver by token
+      - validation is driver detail already created
+    `,
   })
   @ApiBody({
     description: 'intended for driver only',
@@ -55,14 +73,27 @@ export class DriverVehicleDetailController {
   })
   async create(
     @Req() req: Request,
-    @UploadedFile() vehicle_image_file: Express.Multer.File,
     @Body() driverVehicleDetailDto: DriverVehicleDetailDto,
   ) {
-    return await this.driverVehicleDetailService.create(
+    const user = req.user as User;
+    if (user.role !== Role.DRIVER) {
+      throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
+    }
+
+    const findDriverDetail =
+      await this.driverVehicleDetailService.findOne(user);
+    if (findDriverDetail.driver_detail) {
+      throw new MethodNotAllowedException(
+        `user ${user.email} is already create driver detail, you need to perform update driver detail!`,
+      );
+    }
+
+    const createDriverVehicle = await this.driverVehicleDetailService.create(
       req.user as User,
-      vehicle_image_file,
       driverVehicleDetailDto,
     );
+
+    return new HttpException(createDriverVehicle, HttpStatus.CREATED);
   }
 
   @Patch('')

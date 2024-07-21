@@ -27,16 +27,17 @@ export class UserDetailService {
   }
 
   async update(user: User, userDetailDto: UserDetailDto) {
+    const { role, ...rest } = userDetailDto;
     const updateUser = await this.prisma.user.update({
       where: {
         user_id: user.user_id,
       },
       data: {
-        role: userDetailDto.role,
+        role,
         user_detail: {
           update: {
             data: {
-              ...userDetailDto,
+              ...rest,
             },
           },
         },
