@@ -25,11 +25,11 @@ import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 @ApiTags('RoomChat Table (token required)')
 @ApiBearerAuth('access-token')
 @Controller('room-chat')
+@UseGuards(JwtAuthGuard)
 export class RoomChatController {
   constructor(private readonly roomChatService: RoomChatService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'create new room chat',
     description: `
@@ -63,6 +63,11 @@ export class RoomChatController {
   })
   async findOne(@Param('order_id') id: string) {
     const findRoomChat = await this.roomChatService.findOne(id);
+    if (!findRoomChat) {
+      throw new MethodNotAllowedException(
+        `room chat with id ${id} is not found!`,
+      );
+    }
     return new HttpException(findRoomChat, HttpStatus.OK);
   }
 

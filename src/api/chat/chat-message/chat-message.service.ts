@@ -1,26 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
 import { UpdateChatMessageDto } from './dto/update-chat-message.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ChatMessageService {
-  create(createChatMessageDto: CreateChatMessageDto) {
-    return 'This action adds a new chatMessage';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(createChatMessageDto: CreateChatMessageDto) {
+    const newChat = await this.prisma.chatMessage.create({
+      data: {
+        ...createChatMessageDto,
+      },
+    });
+    return newChat;
   }
 
-  findAll() {
-    return `This action returns all chatMessage`;
+  async findAll() {
+    const allChat = await this.prisma.chatMessage.findMany({
+      include: {
+        room_chat: true,
+        user: {
+          include: {
+            user_detail: true,
+            customer_detail: true,
+          },
+        },
+      },
+    });
+    return allChat;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chatMessage`;
+  async findOne(chat_id: string) {
+    const findChat = await this.prisma.chatMessage.findFirst({
+      where: {
+        chat_id,
+      },
+      include: {
+        room_chat: true,
+        user: {
+          include: {
+            user_detail: true,
+            customer_detail: true,
+          },
+        },
+      },
+    });
+    return findChat;
   }
 
-  update(id: number, updateChatMessageDto: UpdateChatMessageDto) {
-    return `This action updates a #${id} chatMessage`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chatMessage`;
+  async update(chat_id: string, updateChatMessageDto: UpdateChatMessageDto) {
+    const udpateChat = await this.prisma.chatMessage.update({
+      where: {
+        chat_id,
+      },
+      data: {
+        ...updateChatMessageDto,
+      },
+    });
+    return udpateChat;
   }
 }
