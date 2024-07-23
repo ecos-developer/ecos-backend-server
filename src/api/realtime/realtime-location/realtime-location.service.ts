@@ -12,6 +12,15 @@ export class RealtimeLocationService {
       data: {
         ...createRealtimeLocationDto,
       },
+      include: {
+        user: {
+          include: {
+            user_detail: true,
+            customer_detail: true,
+            driver_detail: true,
+          },
+        },
+      },
     });
     return newLoc;
   }
@@ -49,11 +58,27 @@ export class RealtimeLocationService {
     return findLoc;
   }
 
-  update(id: number, updateRealtimeLocationDto: UpdateRealtimeLocationDto) {
-    return `This action updates a #${id} realtimeLocation`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} realtimeLocation`;
+  async update(
+    user_id: string,
+    updateRealtimeLocationDto: UpdateRealtimeLocationDto,
+  ) {
+    const updateLoc = await this.prisma.realtimeLocation.update({
+      where: {
+        user_id,
+      },
+      data: {
+        ...updateRealtimeLocationDto,
+      },
+      include: {
+        user: {
+          include: {
+            user_detail: true,
+            customer_detail: true,
+            driver_detail: true,
+          },
+        },
+      },
+    });
+    return updateLoc;
   }
 }

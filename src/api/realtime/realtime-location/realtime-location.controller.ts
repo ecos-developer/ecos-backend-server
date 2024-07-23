@@ -82,10 +82,21 @@ export class RealtimeLocationController {
     description: 'Endpoint for update RealtimeLocation',
     type: UpdateRealtimeLocationDto,
   })
-  update(
+  async update(
     @Param('user_id') id: string,
     @Body() updateRealtimeLocationDto: UpdateRealtimeLocationDto,
   ) {
-    return this.realtimeLocationService.update(+id, updateRealtimeLocationDto);
+    const findLoc = await this.realtimeLocationService.findOne(id);
+    if (!findLoc) {
+      throw new MethodNotAllowedException(
+        `RealtimeLocation with ID ${id} is not found!`,
+      );
+    }
+    const updateLoc = await this.realtimeLocationService.update(
+      id,
+      updateRealtimeLocationDto,
+    );
+
+    return new HttpException(updateLoc, HttpStatus.OK);
   }
 }
