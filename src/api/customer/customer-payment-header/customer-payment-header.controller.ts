@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  MethodNotAllowedException,
 } from '@nestjs/common';
 import { CustomerPaymentHeaderService } from './customer-payment-header.service';
 import { CreateCustomerPaymentHeaderDto } from './dto/create-customer-payment-header.dto';
@@ -62,6 +63,13 @@ export class CustomerPaymentHeaderController {
   async findOne(@Param('customer_payment_id') id: string) {
     const findCustomerPayment =
       await this.customerPaymentHeaderService.findOne(id);
+
+    if (!findCustomerPayment) {
+      throw new MethodNotAllowedException(
+        `PaymentHeader with ID ${id} is not found!`,
+      );
+    }
+
     return new HttpException(findCustomerPayment, HttpStatus.CREATED);
   }
 
