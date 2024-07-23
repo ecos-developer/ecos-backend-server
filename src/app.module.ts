@@ -13,6 +13,8 @@ import { CustomerOrderHeaderModule } from './api/customer/customer-order-header/
 import { CustomerPaymentHeaderModule } from './api/customer/customer-payment-header/customer-payment-header.module';
 import { RoomChatModule } from './api/chat/room-chat/room-chat.module';
 import { ChatMessageModule } from './api/chat/chat-message/chat-message.module';
+import { RealtimeLocationModule } from './api/realtime/realtime-location/realtime-location.module';
+import { RealtimeCustomerEachDayPickupModule } from './api/realtime/realtime-customer-each-day-pickup/realtime-customer-each-day-pickup.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { ChatMessageModule } from './api/chat/chat-message/chat-message.module';
     DriverOrderHeaderModule,
     RoomChatModule,
     ChatMessageModule,
+    RealtimeLocationModule,
+    RealtimeCustomerEachDayPickupModule,
   ],
 })
 export class AppModule {}
