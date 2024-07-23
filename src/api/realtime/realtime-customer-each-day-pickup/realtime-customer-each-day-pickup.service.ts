@@ -1,26 +1,141 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRealtimeCustomerEachDayPickupDto } from './dto/create-realtime-customer-each-day-pickup.dto';
 import { UpdateRealtimeCustomerEachDayPickupDto } from './dto/update-realtime-customer-each-day-pickup.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class RealtimeCustomerEachDayPickupService {
-  create(createRealtimeCustomerEachDayPickupDto: CreateRealtimeCustomerEachDayPickupDto) {
-    return 'This action adds a new realtimeCustomerEachDayPickup';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(
+    createRealtimeCustomerEachDayPickupDto: CreateRealtimeCustomerEachDayPickupDto,
+  ) {
+    const newPickup = await this.prisma.realtimeCustomerEachDayPickup.create({
+      data: {
+        ...createRealtimeCustomerEachDayPickupDto,
+      },
+      include: {
+        customer_order_header: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+                customer_detail: true,
+              },
+            },
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return newPickup;
   }
 
-  findAll() {
-    return `This action returns all realtimeCustomerEachDayPickup`;
+  async findAll() {
+    const allPickup = await this.prisma.realtimeCustomerEachDayPickup.findMany({
+      include: {
+        customer_order_header: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+                customer_detail: true,
+              },
+            },
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return allPickup;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} realtimeCustomerEachDayPickup`;
+  async findOne(pickup_id: string) {
+    const findPickup =
+      await this.prisma.realtimeCustomerEachDayPickup.findFirst({
+        where: {
+          pickup_id,
+        },
+        include: {
+          customer_order_header: {
+            include: {
+              user: {
+                include: {
+                  user_detail: true,
+                  customer_detail: true,
+                },
+              },
+              driver_order_header: {
+                include: {
+                  user: {
+                    include: {
+                      user_detail: true,
+                      driver_detail: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    return findPickup;
   }
 
-  update(id: number, updateRealtimeCustomerEachDayPickupDto: UpdateRealtimeCustomerEachDayPickupDto) {
-    return `This action updates a #${id} realtimeCustomerEachDayPickup`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} realtimeCustomerEachDayPickup`;
+  async update(
+    pickup_id: string,
+    updateRealtimeCustomerEachDayPickupDto: UpdateRealtimeCustomerEachDayPickupDto,
+  ) {
+    const updatePickup = await this.prisma.realtimeCustomerEachDayPickup.update(
+      {
+        where: {
+          pickup_id,
+        },
+        data: {
+          ...updateRealtimeCustomerEachDayPickupDto,
+        },
+        include: {
+          customer_order_header: {
+            include: {
+              user: {
+                include: {
+                  user_detail: true,
+                  customer_detail: true,
+                },
+              },
+              driver_order_header: {
+                include: {
+                  user: {
+                    include: {
+                      user_detail: true,
+                      driver_detail: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    );
+    return updatePickup;
   }
 }
