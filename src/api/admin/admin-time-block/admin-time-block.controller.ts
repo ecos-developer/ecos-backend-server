@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -29,8 +31,8 @@ export class AdminTimeBlockController {
 
   @Get('')
   @ApiOperation({ summary: 'get all admin time block available' })
-  async findAll(@Req() req: Request) {
-    return await this.adminTimeBlockService.findAll(req.user as User);
+  async findAll() {
+    return await this.adminTimeBlockService.findAll();
   }
 
   @Get(':id')
@@ -41,12 +43,26 @@ export class AdminTimeBlockController {
     type: 'string',
     example: '2c1390a4-0b50-48fb-8145-bd8a90558fc7',
   })
-  async findById(@Req() req: Request, @Param('id') id: string) {
-    return await this.adminTimeBlockService.findById(req.user as User, id);
+  async findById(@Param('id') id: string) {
+    return await this.adminTimeBlockService.findById(id);
+  }
+
+  @Get('driver/:driver_id')
+  @ApiOperation({ summary: 'get specific admin time block by driver_id' })
+  @ApiParam({
+    name: 'driver_id',
+    description: 'ID of the User with role DRIVER',
+    example: 'get this ID from table User',
+  })
+  async findByDriverId(@Param('driver_id') id: string) {
+    const findOrderWave = await this.adminTimeBlockService.findByDriverId(id);
+    return new HttpException(findOrderWave, HttpStatus.OK);
   }
 
   @Post('')
-  @ApiOperation({ summary: 'create new time block for driver (admin authorization)' })
+  @ApiOperation({
+    summary: 'create new time block for driver (admin authorization)',
+  })
   async create(
     @Req() req: Request,
     @Body() insertAdminTimeBlockDto: InsertAdminTimeBlockDto,
@@ -58,7 +74,9 @@ export class AdminTimeBlockController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'update admin time block by id (admin authorization)' })
+  @ApiOperation({
+    summary: 'update admin time block by id (admin authorization)',
+  })
   @ApiParam({
     name: 'id',
     description: 'ID of the admin time block',

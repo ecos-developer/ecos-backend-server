@@ -13,8 +13,7 @@ import { InsertAdminTimeBlockDto } from './dto/insert-admin-time-block.dto';
 export class AdminTimeBlockService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(user: User) {
-
+  async findAll() {
     const allTimeBlock = await this.prisma.adminTimeBlock.findMany({
       include: {
         user: true,
@@ -25,7 +24,7 @@ export class AdminTimeBlockService {
     return new HttpException(allTimeBlock, HttpStatus.CREATED);
   }
 
-  async findById(user: User, id: string) {
+  async findById(id: string) {
     if (id === null || id === undefined || id === '') {
       throw new MethodNotAllowedException(`invalid id value ${id}!`);
     }
@@ -45,6 +44,34 @@ export class AdminTimeBlockService {
 
     if (!currTimeBlock) {
       throw new NotFoundException(`time block with id ${id} is not found!`);
+    }
+
+    return new HttpException(currTimeBlock, HttpStatus.CREATED);
+  }
+
+  async findByDriverId(user_id: string) {
+    if (user_id === null || user_id === undefined || user_id === '') {
+      throw new MethodNotAllowedException(`invalid user_id value ${user_id}!`);
+    }
+
+    const currTimeBlock = await this.prisma.adminTimeBlock.findFirst({
+      include: {
+        driver_order_header: {
+          include: {
+            user: {
+              where: {
+                user_id,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!currTimeBlock) {
+      throw new NotFoundException(
+        `time block with id ${user_id} is not found!`,
+      );
     }
 
     return new HttpException(currTimeBlock, HttpStatus.CREATED);
