@@ -36,7 +36,7 @@ model CustomerDetail {
   user_id      String @id
   binusian_id  String
   parent_phone String
-  user         User?  @relation(fields: [user_id], references: [user_id])
+  user         User?  @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model UserDetail {
@@ -49,7 +49,7 @@ model UserDetail {
   is_admin_approved Boolean
   is_email_verified Boolean
   is_phone_verified Boolean
-  User              User?    @relation(fields: [user_id], references: [user_id])
+  User              User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   updated_at        DateTime @updatedAt
 }
 
@@ -60,9 +60,9 @@ model DriverDetail {
   vehicle_model        String
   vehicle_capacity     Int
   vehicle_number_plate String
-  user                 User?    @relation(fields: [user_id], references: [user_id])
+  user                 User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   payment_id           String?  @unique
-  payment              Payment? @relation(fields: [payment_id], references: [payment_id])
+  payment              Payment? @relation(fields: [payment_id], references: [payment_id], onUpdate: Cascade, onDelete: Cascade)
   updated_at           DateTime @updatedAt
 }
 
@@ -79,8 +79,8 @@ model Term {
   user_id    String   @id
   role       Role
   is_agree   Boolean
-  user       User?    @relation(fields: [user_id], references: [user_id])
-  term_text  TermText @relation(fields: [role], references: [role])
+  user       User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
+  term_text  TermText @relation(fields: [role], references: [role], onUpdate: Cascade, onDelete: Cascade)
   created_at DateTime @default(now())
 }
 
@@ -96,7 +96,7 @@ model RealtimeLocation {
   date      DateTime
   latitude  Decimal
   longitude Decimal
-  user      User?    @relation(fields: [user_id], references: [user_id])
+  user      User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   location  String
 }
 
@@ -105,21 +105,21 @@ model DriverOrderHeader {
   driver_id             String
   time_block_id         String
   is_admin_approved     Boolean
-  customer_order_header CustomerOrderHeader[] 
-  user                  User?                 @relation(fields: [driver_id], references: [user_id])
+  customer_order_header CustomerOrderHeader[]
+  user                  User?                 @relation(fields: [driver_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   room_chat             RoomChat?
-  admin_time_block      AdminTimeBlock?       @relation(fields: [time_block_id], references: [time_block_id])
+  admin_time_block      AdminTimeBlock?       @relation(fields: [time_block_id], references: [time_block_id], onUpdate: Cascade, onDelete: Cascade)
   created_at            DateTime              @default(now())
   updated_at            DateTime              @updatedAt
 }
 
-model CustomerOrderHeader { 
+model CustomerOrderHeader {
   customer_order_id                 String                          @id @default(uuid())
   order_id                          String
   user_id                           String
   extra_passenger                   Int
-  driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id])
-  user                              User?                           @relation(fields: [user_id], references: [user_id])
+  driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)
+  user                              User?                           @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   payment_header                    PaymentHeader[]
   realtime_customer_each_day_pickup RealtimeCustomerEachDayPickup[]
   created_at                        DateTime                        @default(now())
@@ -129,7 +129,7 @@ model RoomChat {
   order_id            String             @id
   name                String
   is_expired          Boolean
-  driver_order_header DriverOrderHeader? @relation(fields: [order_id], references: [order_id])
+  driver_order_header DriverOrderHeader? @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)
   chat_message        ChatMessage[]
   created_at          DateTime           @default(now())
 }
@@ -139,8 +139,8 @@ model ChatMessage {
   order_id   String
   user_id    String
   message    String
-  user       User?     @relation(fields: [user_id], references: [user_id])
-  room_chat  RoomChat? @relation(fields: [order_id], references: [order_id])
+  user       User?     @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
+  room_chat  RoomChat? @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)
   created_at DateTime  @default(now())
 }
 
@@ -149,19 +149,19 @@ model AdminTimeBlock {
   user_id             String
   start_date          DateTime
   end_date            DateTime
-  user                User?               @relation(fields: [user_id], references: [user_id])
+  user                User?               @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   driver_order_header DriverOrderHeader[]
   created_at          DateTime            @default(now())
 }
 
 model PaymentHeader {
   customer_payment_id   String               @id @default(uuid())
-  customer_order_id     String               
+  customer_order_id     String
   payment_proof_image   String?
   payment_total         Int
   is_admin_approved     Boolean
   expired_at            DateTime
-  customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id])
+  customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id], onUpdate: Cascade, onDelete: Cascade)
   created_at            DateTime             @default(now())
   updated_at            DateTime             @updatedAt
 }
@@ -173,7 +173,7 @@ model RealtimeCustomerEachDayPickup {
   is_canceled           Boolean
   is_pickup             Boolean
   is_arrived            Boolean
-  customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id])
+  customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id], onUpdate: Cascade, onDelete: Cascade)
   start_pickup          DateTime?
   end_pickup            DateTime
 }
