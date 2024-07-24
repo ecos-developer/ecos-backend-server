@@ -7,6 +7,7 @@ import {
   Req,
   HttpStatus,
   HttpException,
+  MethodNotAllowedException,
 } from '@nestjs/common';
 import { UserDetailService } from './user_detail.service';
 import { UserDetailDto } from './dto/user_detail.dto';
@@ -37,10 +38,14 @@ export class UserDetailController {
     type: UserDetailDto,
   })
   async update(@Req() req: Request, @Body() userDetailDto: UserDetailDto) {
-    const updateUser = await this.userDetailService.update(
-      req.user as User,
-      userDetailDto,
-    );
-    return new HttpException(updateUser, HttpStatus.CREATED);
+    try {
+      const updateUser = await this.userDetailService.update(
+        req.user as User,
+        userDetailDto,
+      );
+      return new HttpException(updateUser, HttpStatus.CREATED);
+    } catch (error) {
+      throw new MethodNotAllowedException(error.message);
+    }
   }
 }
