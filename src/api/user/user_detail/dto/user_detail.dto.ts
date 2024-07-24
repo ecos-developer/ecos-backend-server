@@ -6,10 +6,11 @@ import {
   IsString,
   IsBoolean,
   IsEnum,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class UserDetailDto {
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
     example: 'John Doe',
@@ -18,7 +19,7 @@ export class UserDetailDto {
   })
   name?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
     example: '1234567890',
