@@ -18,7 +18,7 @@ import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
 import { Role, User } from '@prisma/client';
 import { UpdateDriverVehicleDetailDto } from './dto/update-driver-vehicle-detail.dto';
 
-@ApiTags('DriverDetail table (token required, driver authorized)')
+@ApiTags('DriverDetail table (token required)')
 @ApiBearerAuth('access-token')
 @Controller('driver-vehicle-detail')
 export class DriverVehicleDetailController {
@@ -35,11 +35,6 @@ export class DriverVehicleDetailController {
     `,
   })
   async findOne(@Req() req: Request) {
-    const user = req.user as User;
-    if (user.role !== Role.DRIVER) {
-      throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
-    }
-
     const driverDetail = await this.driverVehicleDetailService.findOne(
       req.user as User,
     );
@@ -66,9 +61,6 @@ export class DriverVehicleDetailController {
     @Body() driverVehicleDetailDto: DriverVehicleDetailDto,
   ) {
     const user = req.user as User;
-    if (user.role !== Role.DRIVER) {
-      throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
-    }
 
     const findDriverDetail =
       await this.driverVehicleDetailService.findOne(user);
@@ -105,9 +97,6 @@ export class DriverVehicleDetailController {
     @Body() updateDriverVehicleDetailDto: UpdateDriverVehicleDetailDto,
   ) {
     const user = req.user as User;
-    if (user.role !== Role.DRIVER) {
-      throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
-    }
 
     const findDriverDetail =
       await this.driverVehicleDetailService.findOne(user);
