@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
 import { DriverVehicleDetailDto } from './dto/driver_vehicle_detail.dto';
-import { Role, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { UpdateDriverVehicleDetailDto } from './dto/update-driver-vehicle-detail.dto';
 
 @ApiTags('DriverDetail table (token required)')

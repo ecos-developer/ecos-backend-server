@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   MethodNotAllowedException,
+  Req,
 } from '@nestjs/common';
 import { RoomChatService } from './room-chat.service';
 import { CreateRoomChatDto } from './dto/create-room-chat.dto';
@@ -21,6 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
+import { Request } from 'express';
+import { User } from '@prisma/client';
 
 @ApiTags('RoomChat Table (token required)')
 @ApiBearerAuth('access-token')
@@ -66,6 +69,25 @@ export class RoomChatController {
     if (!findRoomChat) {
       throw new MethodNotAllowedException(
         `room chat with id ${id} is not found!`,
+      );
+    }
+    return new HttpException(findRoomChat, HttpStatus.OK);
+  }
+
+  @Get('token')
+  @ApiOperation({
+    summary: 'fetch room chat by token',
+    description: `
+      - verified whether it is driver or customer
+    `,
+  })
+  async findByUserId(@Req() req: Request) {
+    const findRoomChat = await this.roomChatService.findByUserId(
+      req.user as User,
+    );
+    if (!findRoomChat) {
+      throw new MethodNotAllowedException(
+        `${(req.user as User).email} did not have any room chat!`,
       );
     }
     return new HttpException(findRoomChat, HttpStatus.OK);
