@@ -9,6 +9,7 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@prisma/client';
+import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +41,26 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+  async findById(user_id: string) {
+    const findUser = await this.prisma.user.findFirst({
+      where: {
+        user_id,
+      },
+    });
+    return findUser;
+  }
+  async updatePass(updateAuthDto: UpdateAuthDto) {
+    const hashedPassword = await bcrypt.hash(updateAuthDto.password, 10);
+    const updateUser = await this.prisma.user.update({
+      where: {
+        user_id: updateAuthDto.user_id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+    return updateUser;
   }
 
   async register(registerAuthDto: RegisterAuthDto) {
