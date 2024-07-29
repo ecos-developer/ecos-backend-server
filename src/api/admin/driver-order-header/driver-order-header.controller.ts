@@ -39,10 +39,10 @@ export class DriverOrderHeaderController {
       createDriverOrderHeaderDto.time_block_id,
     );
 
-    if(driverOrderHeader) {
+    if (driverOrderHeader) {
       throw new MethodNotAllowedException(
-        `driver ${createDriverOrderHeaderDto.driver_id} is already book this admin time block! Duplicate pairs driver_id and time_block_id detected!`
-      )
+        `driver ${createDriverOrderHeaderDto.driver_id} is already book this admin time block! Duplicate pairs driver_id and time_block_id detected!`,
+      );
     }
 
     const newDriverOrderHeader = await this.driverOrderHeaderService.create(
