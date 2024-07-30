@@ -10,7 +10,6 @@ import {
   HttpStatus,
   NotFoundException,
   MethodNotAllowedException,
-  Req,
 } from '@nestjs/common';
 import { CustomerOrderHeaderService } from './customer-order-header.service';
 import { CreateCustomerOrderHeaderDto } from './dto/create-customer-order-header.dto';
@@ -23,8 +22,6 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { DriverOrderHeaderService } from 'src/api/admin/driver-order-header/driver-order-header.service';
-import { User } from '@prisma/client';
-import { Request } from 'express';
 
 @ApiTags('CustomerOrderHeader Table (token required)')
 @Controller('customer-order-header')
