@@ -10,6 +10,7 @@ import {
   HttpStatus,
   NotFoundException,
   MethodNotAllowedException,
+  Req,
 } from '@nestjs/common';
 import { CustomerOrderHeaderService } from './customer-order-header.service';
 import { CreateCustomerOrderHeaderDto } from './dto/create-customer-order-header.dto';
@@ -22,11 +23,12 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { DriverOrderHeaderService } from 'src/api/admin/driver-order-header/driver-order-header.service';
+import { User } from '@prisma/client';
+import { Request } from 'express';
 
 @ApiTags('CustomerOrderHeader Table (token required)')
-@ApiBearerAuth('access-token')
 @Controller('customer-order-header')
-@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 export class CustomerOrderHeaderController {
   constructor(
     private readonly customerOrderHeaderService: CustomerOrderHeaderService,
@@ -42,6 +44,7 @@ export class CustomerOrderHeaderController {
     - Include validation non duplicate pairs between order_id and user_id
     `,
   })
+  @UseGuards(JwtAuthGuard)
   async create(
     @Body() createCustomerOrderHeaderDto: CreateCustomerOrderHeaderDto,
   ) {
@@ -72,6 +75,7 @@ export class CustomerOrderHeaderController {
 
   @Get()
   @ApiOperation({ summary: 'find all customer order header' })
+  @UseGuards(JwtAuthGuard)
   async findAll() {
     const allCustomerOrderHeader =
       await this.customerOrderHeaderService.findAll();
@@ -79,7 +83,7 @@ export class CustomerOrderHeaderController {
   }
 
   @Get(':customer_order_id')
-  @ApiOperation({ summary: 'find customer order by id' })
+  @ApiOperation({ summary: 'find customer order by customer_order_id' })
   @ApiParam({
     name: 'customer_order_id',
     description: 'customer_order_id for the customer order',
@@ -92,8 +96,24 @@ export class CustomerOrderHeaderController {
     return new HttpException(findCustomerOrderHeader, HttpStatus.CREATED);
   }
 
+  @Get('user/:user_id')
+  @ApiOperation({ summary: 'find customer order by user_id' })
+  @UseGuards(JwtAuthGuard)
+  @ApiParam({
+    name: 'user_id',
+    description: 'customer_order_id for the customer order',
+    type: String,
+    example: 'aa1f9715-b276-4154-95bf-6466afa6886c',
+  })
+  async findByUserId(@Param('user_id') id: string) {
+    const findCustomerOrderHeader =
+      await this.customerOrderHeaderService.findByUserId(id);
+    return new HttpException(findCustomerOrderHeader, HttpStatus.CREATED);
+  }
+
   @Patch(':customer_order_id')
   @ApiOperation({ summary: 'update customer order by id' })
+  @UseGuards(JwtAuthGuard)
   @ApiParam({
     name: 'customer_order_id',
     description: 'customer_order_id for the customer order',

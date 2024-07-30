@@ -62,6 +62,37 @@ export class CustomerOrderHeaderService {
     return findCustomerOrderHeader;
   }
 
+  async findByUserId(user_id: string) {
+    const findCustomerOrderHeader = await this.prisma.user.findFirst({
+      where: {
+        user_id,
+      },
+      include: {
+        user_detail: true,
+        customer_order_header: {
+          include: {
+            payment_header: true,
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: {
+                      include: {
+                        payment: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return findCustomerOrderHeader;
+  }
+
   async findByPairs(user_id: string, order_id: string) {
     const findCustomerOrderHeader =
       await this.prisma.customerOrderHeader.findFirst({
