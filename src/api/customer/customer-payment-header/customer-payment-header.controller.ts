@@ -69,7 +69,25 @@ export class CustomerPaymentHeaderController {
         `PaymentHeader with ID ${id} is not found!`,
       );
     }
+    return new HttpException(findCustomerPayment, HttpStatus.CREATED);
+  }
 
+  @Get('user/:user_id')
+  @ApiParam({
+    name: 'user_id',
+    description: 'customer_order_id for the customer order',
+    type: String,
+    example: 'get this ID from PaymentHeader table',
+  })
+  async findByUserId(@Param('user_id') id: string) {
+    const findCustomerPayment =
+      await this.customerPaymentHeaderService.findByUserId(id);
+
+    if (!findCustomerPayment) {
+      throw new MethodNotAllowedException(
+        `PaymentHeader with ID ${id} is not found!`,
+      );
+    }
     return new HttpException(findCustomerPayment, HttpStatus.CREATED);
   }
 

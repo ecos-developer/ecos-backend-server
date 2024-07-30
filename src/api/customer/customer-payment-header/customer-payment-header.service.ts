@@ -58,6 +58,23 @@ export class CustomerPaymentHeaderService {
     return findCustomerPayment;
   }
 
+  async findByUserId(user_id: string) {
+    const findCustomerPayment = await this.prisma.user.findFirst({
+      where: {
+        user_id,
+      },
+      include: {
+        user_detail: true,
+        customer_order_header: {
+          include: {
+            payment_header: true,
+          },
+        },
+      },
+    });
+    return findCustomerPayment;
+  }
+
   async update(
     customer_payment_id: string,
     updateCustomerPaymentHeaderDto: UpdateCustomerPaymentHeaderDto,
