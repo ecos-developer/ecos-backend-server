@@ -110,8 +110,35 @@ export class PaymentService {
       throw new MethodNotAllowedException(`user ${user.email} is not driver!`);
     }
     if (!currUser.driver_detail.payment) {
-      throw new MethodNotAllowedException(
-        `user ${user.email} payment is not exist! perform create payment instead!`,
+      const createDriverPayment = await this.prisma.user.update({
+        where: {
+          user_id: currUser.user_id,
+        },
+        include: {
+          driver_detail: {
+            include: {
+              payment: true,
+            },
+          },
+          user_detail: true,
+        },
+        data: {
+          driver_detail: {
+            update: {
+              payment: {
+                create: {
+                  name: updatePaymentDto.name,
+                  account_number: updatePaymentDto.account_number,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return new HttpException(
+        createDriverPayment.driver_detail.payment,
+        HttpStatus.CREATED,
       );
     }
 
