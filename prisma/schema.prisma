@@ -29,7 +29,17 @@ model User {
   driver_order_header   DriverOrderHeader[]
   chat_message          ChatMessage[]
   admin_time_block      AdminTimeBlock[]
+  notification          Notification[]
   created_at            DateTime              @default(now())
+}
+
+model Notification {
+  notification_id String   @id @default(uuid())
+  user_id         String
+  content         String
+  is_read         Boolean  @default(false)
+  user            User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
+  created_at      DateTime @default(now())
 }
 
 model CustomerDetail {
@@ -105,6 +115,7 @@ model DriverOrderHeader {
   driver_id             String
   time_block_id         String
   is_admin_approved     Boolean
+  is_ongoing            Boolean
   customer_order_header CustomerOrderHeader[]
   user                  User?                 @relation(fields: [driver_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   room_chat             RoomChat?
@@ -118,6 +129,7 @@ model CustomerOrderHeader {
   order_id                          String
   user_id                           String
   extra_passenger                   Int
+  is_ongoing                        Boolean
   driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)
   user                              User?                           @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   payment_header                    PaymentHeader[]
@@ -149,6 +161,8 @@ model AdminTimeBlock {
   user_id             String
   start_date          DateTime
   end_date            DateTime
+  start_pickup        DateTime
+  end_pickup          DateTime
   user                User?               @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   driver_order_header DriverOrderHeader[]
   created_at          DateTime            @default(now())
