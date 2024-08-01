@@ -8,6 +8,7 @@ import {
 import { Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { InsertAdminTimeBlockDto } from './dto/insert-admin-time-block.dto';
+import { UpdateAdminTimeBlockDto } from './dto/update-admin-time-block.dto';
 
 @Injectable()
 export class AdminTimeBlockService {
@@ -99,6 +100,8 @@ export class AdminTimeBlockService {
           create: {
             start_date: insertAdminTimeBlockDto.start_date,
             end_date: insertAdminTimeBlockDto.end_date,
+            start_pickup: insertAdminTimeBlockDto.start_pickup,
+            end_pickup: insertAdminTimeBlockDto.end_pickup,
           },
         },
       },
@@ -112,7 +115,7 @@ export class AdminTimeBlockService {
   async updateById(
     user: User,
     id: string,
-    insertAdminTimeBlockDto: InsertAdminTimeBlockDto,
+    updateAdminTimeBlockDto: UpdateAdminTimeBlockDto,
   ) {
     if (id === null || id === undefined || id === '') {
       throw new MethodNotAllowedException(`invalid id value ${id}!`);
@@ -152,8 +155,7 @@ export class AdminTimeBlockService {
         time_block_id: id,
       },
       data: {
-        start_date: insertAdminTimeBlockDto.start_date,
-        end_date: insertAdminTimeBlockDto.end_date,
+        ...updateAdminTimeBlockDto
       },
       include: {
         user: true,

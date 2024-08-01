@@ -13,6 +13,7 @@ export class DriverOrderHeaderService {
         driver_id: createDriverOrderHeaderDto.driver_id,
         time_block_id: createDriverOrderHeaderDto.time_block_id,
         is_admin_approved: false,
+        is_ongoing: false
       },
     });
 

@@ -17,4 +17,20 @@ export class InsertAdminTimeBlockDto {
     example: '2024-08-16T00:00:00Z',
   })
   end_date: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Start pickup for driver',
+    type: String,
+    example: '2024-07-15T00:00:00Z',
+  })
+  start_pickup: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'End pickup for driver',
+    type: String,
+    example: '2024-08-16T00:00:00Z',
+  })
+  end_pickup: string;
 }

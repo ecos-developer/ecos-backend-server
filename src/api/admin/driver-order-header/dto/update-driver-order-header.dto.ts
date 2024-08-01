@@ -13,4 +13,13 @@ export class UpdateDriverOrderHeaderDto extends PartialType(
     example: true,
   })
   is_admin_approved: boolean;
+  
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    description: 'update the ongoing status of driver order header',
+    type: Boolean,
+    example: true,
+  })
+  is_ongoing: boolean;
 }

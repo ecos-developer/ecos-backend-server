@@ -10,6 +10,7 @@ export class CustomerOrderHeaderService {
     const newCustomerOrder = await this.prisma.customerOrderHeader.create({
       data: {
         ...createCustomerOrderHeaderDto,
+        is_ongoing: false
       },
       include: {
         user: true,
