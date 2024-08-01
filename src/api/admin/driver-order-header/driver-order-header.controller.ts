@@ -64,10 +64,23 @@ export class DriverOrderHeaderController {
     name: 'order_id',
     description: 'order_id of the driver order',
     type: String,
-    example: 'b8cff7ec-cbf6-4788-84ea-71fe9c672dfb',
+    example: 'get this from DriverOrderHeader table',
   })
   async findOne(@Param('order_id') id: string) {
     const currDriverOrder = await this.driverOrderHeaderService.findOne(id);
+    return new HttpException(currDriverOrder, HttpStatus.CREATED);
+  }
+
+  @Get('driver/:user_id')
+  @ApiOperation({ summary: 'find driver order by user_id of a specific driver' })
+  @ApiParam({
+    name: 'user_id',
+    description: 'user_id of the driver order',
+    type: String,
+    example: 'get this from User table',
+  })
+  async findByUserIdDriver(@Param('user_id') id: string) {
+    const currDriverOrder = await this.driverOrderHeaderService.findByUserIdDriver(id);
     return new HttpException(currDriverOrder, HttpStatus.CREATED);
   }
 

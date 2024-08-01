@@ -13,7 +13,7 @@ export class DriverOrderHeaderService {
         driver_id: createDriverOrderHeaderDto.driver_id,
         time_block_id: createDriverOrderHeaderDto.time_block_id,
         is_admin_approved: false,
-        is_ongoing: false
+        is_ongoing: false,
       },
     });
 
@@ -89,6 +89,39 @@ export class DriverOrderHeaderService {
           },
         },
         admin_time_block: true,
+      },
+    });
+
+    return driverOrderById;
+  }
+
+  async findByUserIdDriver(user_id: string) {
+    const driverOrderById = await this.prisma.user.findFirst({
+      where: {
+        user_id,
+      },
+      include: {
+        user_detail: true,
+        driver_detail: {
+          include: {
+            payment: true,
+          },
+        },
+        driver_order_header: {
+          include: {
+            customer_order_header: {
+              include: {
+                payment_header: true,
+                user: {
+                  include: {
+                    user_detail: true,
+                    customer_detail: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
