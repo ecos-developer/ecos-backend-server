@@ -15,6 +15,7 @@ import { RoomChatModule } from './api/chat/room-chat/room-chat.module';
 import { ChatMessageModule } from './api/chat/chat-message/chat-message.module';
 import { RealtimeLocationModule } from './api/realtime/realtime-location/realtime-location.module';
 import { RealtimeCustomerEachDayPickupModule } from './api/realtime/realtime-customer-each-day-pickup/realtime-customer-each-day-pickup.module';
+import { NotificationModule } from './api/notification/notification.module';
 
 @Module({
   imports: [
@@ -44,6 +45,9 @@ import { RealtimeCustomerEachDayPickupModule } from './api/realtime/realtime-cus
     ChatMessageModule,
     RealtimeLocationModule,
     RealtimeCustomerEachDayPickupModule,
+
+    // NOTIFICATION
+    NotificationModule,
   ],
 })
 export class AppModule {}
