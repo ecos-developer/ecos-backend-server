@@ -109,6 +109,7 @@ export class DriverOrderHeaderService {
         },
         driver_order_header: {
           include: {
+            admin_time_block: true,
             customer_order_header: {
               include: {
                 payment_header: true,
