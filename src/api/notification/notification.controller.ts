@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   MethodNotAllowedException,
+  Sse,
 } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -21,12 +22,26 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { fromEvent, map } from 'rxjs';
 
 @ApiTags('Notification table (token required)')
 @ApiBearerAuth('access-token')
 @Controller('notification')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly event: EventEmitter2,
+  ) {}
+
+  @Sse()
+  sseOrders() {
+      return fromEvent(this.event, 'create-notification').pipe(
+          map((data) => {
+            return {data:data}
+          })
+      )
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)

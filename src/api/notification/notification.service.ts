@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly event: EventEmitter2,
+  ) {}
 
   async create(createNotificationDto: CreateNotificationDto) {
     const newNotif = await this.prisma.notification.create({
@@ -13,6 +17,7 @@ export class NotificationService {
         ...createNotificationDto,
       },
     });
+    this.event.emit('create-notification', newNotif);
     return newNotif;
   }
 

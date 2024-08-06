@@ -16,12 +16,16 @@ import { ChatMessageModule } from './api/chat/chat-message/chat-message.module';
 import { RealtimeLocationModule } from './api/realtime/realtime-location/realtime-location.module';
 import { RealtimeCustomerEachDayPickupModule } from './api/realtime/realtime-customer-each-day-pickup/realtime-customer-each-day-pickup.module';
 import { NotificationModule } from './api/notification/notification.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/public',
+    }),
+    EventEmitterModule.forRoot({
+      global: true
     }),
     AuthModule,
 
