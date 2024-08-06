@@ -31,17 +31,17 @@ import { fromEvent, map } from 'rxjs';
 export class NotificationController {
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly event: EventEmitter2,
+    // private readonly event: EventEmitter2,
   ) {}
 
-  @Sse()
-  sseOrders() {
-      return fromEvent(this.event, 'create-notification').pipe(
-          map((data) => {
-            return {data:data}
-          })
-      )
-  }
+  // @Sse()
+  // sseOrders() {
+  //     return fromEvent(this.event, 'create-notification').pipe(
+  //         map((data) => {
+  //           return {data:data}
+  //         })
+  //     )
+  // }
 
   @Post()
   @UseGuards(JwtAuthGuard)
