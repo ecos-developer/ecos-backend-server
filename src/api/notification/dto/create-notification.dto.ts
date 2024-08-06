@@ -12,7 +12,7 @@ export class CreateNotificationDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    example:'this is example notification message'
+    example: 'this is example notification message',
   })
   content: string;
 }

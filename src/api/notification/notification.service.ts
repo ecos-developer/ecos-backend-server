@@ -17,7 +17,8 @@ export class NotificationService {
         ...createNotificationDto,
       },
     });
-    this.event.emit('create-notification', newNotif);
+    const allNotif = await this.findAll();
+    this.event.emit('create-notification', allNotif);
     return newNotif;
   }
 

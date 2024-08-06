@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   HttpException,
   HttpStatus,
@@ -15,36 +14,40 @@ import {
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { fromEvent, map } from 'rxjs';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Notification } from '@prisma/client';
 
 @ApiTags('Notification table (token required)')
-@ApiBearerAuth('access-token')
+// @ApiBearerAuth('access-token')
 @Controller('notification')
 export class NotificationController {
   constructor(
     private readonly notificationService: NotificationService,
-    // private readonly event: EventEmitter2,
+    private readonly prisma: PrismaService,
+    private readonly event: EventEmitter2,
   ) {}
 
-  // @Sse()
-  // sseOrders() {
-  //     return fromEvent(this.event, 'create-notification').pipe(
-  //         map((data) => {
-  //           return {data:data}
-  //         })
-  //     )
-  // }
+  onModuleInit() {
+    this.event.on('create-notification', (notification: Notification) => {
+      console.log('New notification created:', notification.content);
+      // You can perform additional actions here, such as logging or further processing
+    });
+  }
+
+  @Sse('sse')
+  sseOrders() {
+    return fromEvent(this.event, 'create-notification').pipe(
+      map((data) => {
+        return data;
+      }),
+    );
+  }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'create new notification',
   })
@@ -66,7 +69,6 @@ export class NotificationController {
   }
 
   @Get(':notification_id')
-  @UseGuards(JwtAuthGuard)
   @ApiParam({
     name: 'notification_id',
     type: String,
@@ -87,7 +89,6 @@ export class NotificationController {
   }
 
   @Get('user/:user_id')
-  @UseGuards(JwtAuthGuard)
   @ApiParam({
     name: 'user_id',
     type: String,
