@@ -18,31 +18,34 @@ import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { fromEvent, map } from 'rxjs';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Notification } from '@prisma/client';
+import { SseConfigService } from 'src/config/sse.config.service';
 
 @ApiTags('Notification table (token required)')
 // @ApiBearerAuth('access-token')
 @Controller('notification')
 export class NotificationController {
   constructor(
+    private readonly sse: SseConfigService,
     private readonly notificationService: NotificationService,
-    private readonly prisma: PrismaService,
     private readonly event: EventEmitter2,
   ) {}
 
-  onModuleInit() {
-    this.event.on('create-notification', (notification: Notification) => {
-      console.log('New notification created:', notification.content);
-      // You can perform additional actions here, such as logging or further processing
-    });
-  }
-
-  @Sse('sse')
-  sseOrders() {
-    return fromEvent(this.event, 'create-notification').pipe(
+  @Sse('sse/:user_id')
+  @ApiOperation({
+    summary: 'Stream Server-Sent Events for order notifications',
+  })
+  @ApiParam({
+    name: 'user_id',
+    type: String,
+    example: 'get this ID from User table',
+  })
+  sseOrders(@Param('user_id') id: string) {
+    return fromEvent(
+      this.event,
+      `${this.sse.NOTIFICATION_OBSERVABLE_STRING}/${id}`,
+    ).pipe(
       map((data) => {
-        return data;
+        return { data: data };
       }),
     );
   }

@@ -3,10 +3,12 @@ import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SseConfigService } from 'src/config/sse.config.service';
 
 @Injectable()
 export class NotificationService {
   constructor(
+    private readonly sse: SseConfigService,
     private readonly prisma: PrismaService,
     private readonly event: EventEmitter2,
   ) {}
@@ -17,8 +19,13 @@ export class NotificationService {
         ...createNotificationDto,
       },
     });
-    const allNotif = await this.findAll();
-    this.event.emit('create-notification', allNotif);
+    const notifByUserId = await this.findByUserId(
+      createNotificationDto.user_id,
+    );
+    this.event.emit(
+      `${this.sse.NOTIFICATION_OBSERVABLE_STRING}/${createNotificationDto.user_id}`,
+      notifByUserId,
+    );
     return newNotif;
   }
 
@@ -67,6 +74,9 @@ export class NotificationService {
     const notifications = await this.prisma.user.findFirst({
       where: {
         user_id,
+      },
+      orderBy: {
+        created_at: 'desc',
       },
       include: {
         user_detail: true,
