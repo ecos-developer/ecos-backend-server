@@ -30,26 +30,6 @@ export class NotificationController {
     private readonly event: EventEmitter2,
   ) {}
 
-  @Sse('sse/:user_id')
-  @ApiOperation({
-    summary: 'Stream Server-Sent Events for order notifications',
-  })
-  @ApiParam({
-    name: 'user_id',
-    type: String,
-    example: 'get this ID from User table',
-  })
-  sseOrders(@Param('user_id') id: string) {
-    return fromEvent(
-      this.event,
-      `${this.sse.NOTIFICATION_OBSERVABLE_STRING}/${id}`,
-    ).pipe(
-      map((data) => {
-        return { data: data };
-      }),
-    );
-  }
-
   @Post()
   @ApiOperation({
     summary: 'create new notification',
@@ -134,5 +114,25 @@ export class NotificationController {
       updateNotificationDto,
     );
     return new HttpException(updateNotif, HttpStatus.OK);
+  }
+
+  @Sse('sse/:user_id')
+  @ApiOperation({
+    summary: 'Stream Server-Sent Events for order notifications',
+  })
+  @ApiParam({
+    name: 'user_id',
+    type: String,
+    example: 'get this ID from User table',
+  })
+  sseOrders(@Param('user_id') id: string) {
+    return fromEvent(
+      this.event,
+      `${this.sse.NOTIFICATION_OBSERVABLE_STRING}/${id}`,
+    ).pipe(
+      map((data) => {
+        return { data: data };
+      }),
+    );
   }
 }
