@@ -76,7 +76,7 @@ export class NotificationService {
         user_id,
       },
       orderBy: {
-        created_at: 'desc',
+        created_at: 'asc',
       },
       include: {
         user_detail: true,
