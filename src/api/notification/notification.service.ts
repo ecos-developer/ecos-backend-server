@@ -75,9 +75,6 @@ export class NotificationService {
       where: {
         user_id,
       },
-      orderBy: {
-        created_at: 'asc',
-      },
       include: {
         user_detail: true,
         customer_detail: true,
@@ -86,7 +83,11 @@ export class NotificationService {
             payment: true,
           },
         },
-        notification: true,
+        notification: {
+          orderBy: {
+            created_at: 'desc',
+          },
+        },
       },
     });
     return notifications;
