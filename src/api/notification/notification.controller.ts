@@ -118,7 +118,7 @@ export class NotificationController {
 
   @Sse('sse/:user_id')
   @ApiOperation({
-    summary: 'Stream Server-Sent Events for order notifications',
+    summary: 'Stream notification when the new notification is created',
   })
   @ApiParam({
     name: 'user_id',
