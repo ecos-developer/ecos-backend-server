@@ -26,8 +26,8 @@ import { SseConfigService } from 'src/config/sse.config.service';
 export class NotificationController {
   constructor(
     private readonly sse: SseConfigService,
-    private readonly notificationService: NotificationService,
     private readonly event: EventEmitter2,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Post()

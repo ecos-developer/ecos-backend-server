@@ -5,31 +5,48 @@ import {
   Body,
   Patch,
   Param,
-  UseGuards,
   HttpException,
   HttpStatus,
   MethodNotAllowedException,
+  Sse,
 } from '@nestjs/common';
 import { RealtimeLocationService } from './realtime-location.service';
 import { CreateRealtimeLocationDto } from './dto/create-realtime-location.dto';
 import { UpdateRealtimeLocationDto } from './dto/update-realtime-location.dto';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { fromEvent, map } from 'rxjs';
 
 @ApiTags('RealtimeLocation table (token required)')
-@ApiBearerAuth('access-token')
 @Controller('realtime-location')
-@UseGuards(JwtAuthGuard)
 export class RealtimeLocationController {
   constructor(
+    private readonly sse: SseConfigService,
+    private readonly event: EventEmitter2,
     private readonly realtimeLocationService: RealtimeLocationService,
   ) {}
+
+  @Sse('sse/:user_id')
+  @ApiOperation({
+    summary:
+      'Stream location by user id when the create or update endpoint is triggered',
+  })
+  @ApiParam({
+    name: 'user_id',
+    type: String,
+    example: 'get this ID from User table',
+  })
+  sseLocation(@Param('user_id') id: string) {
+    return fromEvent(
+      this.event,
+      `${this.sse.LOCATION_OBSERVABLE_STRING}/${id}`,
+    ).pipe(
+      map((data) => {
+        return { data: data };
+      }),
+    );
+  }
 
   @Post()
   @ApiOperation({ summary: 'post new location for each user' })
@@ -38,6 +55,17 @@ export class RealtimeLocationController {
     type: CreateRealtimeLocationDto,
   })
   async create(@Body() createRealtimeLocationDto: CreateRealtimeLocationDto) {
+    const findLoc = await this.realtimeLocationService.findOne(
+      createRealtimeLocationDto.user_id,
+    );
+    if (findLoc) {
+      const updateLoc = await this.realtimeLocationService.update(
+        createRealtimeLocationDto.user_id,
+        createRealtimeLocationDto,
+      );
+
+      return new HttpException(updateLoc, HttpStatus.OK);
+    }
     const newLoc = await this.realtimeLocationService.create(
       createRealtimeLocationDto,
     );
