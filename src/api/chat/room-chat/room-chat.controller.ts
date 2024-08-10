@@ -140,7 +140,7 @@ export class RoomChatController {
 
   @Sse('sse/:order_id')
   @ApiOperation({
-    summary: 'Stream room chat when new chat message is created',
+    summary: 'Stream room chat when a new chat message is created',
   })
   @ApiParam({
     name: 'order_id',
