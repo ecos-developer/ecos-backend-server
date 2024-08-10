@@ -69,7 +69,11 @@ export class RoomChatService {
     if (user.role === Role.DRIVER) {
       const findRoomChat = await this.prisma.roomChat.findMany({
         include: {
-          chat_message: true,
+          chat_message: {
+            orderBy: {
+              created_at: 'desc',
+            },
+          },
           driver_order_header: {
             include: {
               user: {
@@ -93,7 +97,11 @@ export class RoomChatService {
     }
     const findRoomChat = await this.prisma.roomChat.findMany({
       include: {
-        chat_message: true,
+        chat_message: {
+          orderBy: {
+            created_at: 'desc',
+          },
+        },
         driver_order_header: {
           include: {
             customer_order_header: {
