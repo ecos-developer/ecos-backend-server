@@ -23,9 +23,9 @@ import {
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 
 @ApiTags('DriverOrderHeader Table (token required)')
-@ApiBearerAuth('access-token')
 @Controller('driver-order-header')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 export class DriverOrderHeaderController {
   constructor(
     private readonly driverOrderHeaderService: DriverOrderHeaderService,
@@ -72,7 +72,9 @@ export class DriverOrderHeaderController {
   }
 
   @Get('driver/:user_id')
-  @ApiOperation({ summary: 'find driver order by user_id of a specific driver' })
+  @ApiOperation({
+    summary: 'find driver order by user_id of a specific driver',
+  })
   @ApiParam({
     name: 'user_id',
     description: 'user_id of the driver order',
@@ -80,7 +82,8 @@ export class DriverOrderHeaderController {
     example: 'get this from User table',
   })
   async findByUserIdDriver(@Param('user_id') id: string) {
-    const currDriverOrder = await this.driverOrderHeaderService.findByUserIdDriver(id);
+    const currDriverOrder =
+      await this.driverOrderHeaderService.findByUserIdDriver(id);
     return new HttpException(currDriverOrder, HttpStatus.CREATED);
   }
 

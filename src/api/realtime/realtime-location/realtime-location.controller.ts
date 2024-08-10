@@ -37,8 +37,8 @@ export class RealtimeLocationController {
     type: String,
     example: 'get this ID from User table',
   })
-  sseLocation(@Param('user_id') id: string) {
-    return fromEvent(
+  async sseLocation(@Param('user_id') id: string) {
+    const eventEmitter = fromEvent(
       this.event,
       `${this.sse.LOCATION_OBSERVABLE_STRING}/${id}`,
     ).pipe(
@@ -46,6 +46,7 @@ export class RealtimeLocationController {
         return { data: data };
       }),
     );
+    return eventEmitter;
   }
 
   @Post()

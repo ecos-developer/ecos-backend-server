@@ -22,7 +22,7 @@ export class InsertAdminTimeBlockDto {
   @ApiProperty({
     description: 'Start pickup for driver',
     type: String,
-    example: '2024-07-15T00:00:00Z',
+    example: '07:00',
   })
   start_pickup: string;
 
@@ -30,7 +30,7 @@ export class InsertAdminTimeBlockDto {
   @ApiProperty({
     description: 'End pickup for driver',
     type: String,
-    example: '2024-08-16T00:00:00Z',
+    example: '14:00',
   })
   end_pickup: string;
 }

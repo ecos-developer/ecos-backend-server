@@ -161,8 +161,8 @@ model AdminTimeBlock {
   user_id             String
   start_date          DateTime
   end_date            DateTime
-  start_pickup        DateTime
-  end_pickup          DateTime
+  start_pickup        String
+  end_pickup          String
   user                User?               @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   driver_order_header DriverOrderHeader[]
   created_at          DateTime            @default(now())

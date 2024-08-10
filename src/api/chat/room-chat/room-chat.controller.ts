@@ -10,6 +10,7 @@ import {
   HttpStatus,
   MethodNotAllowedException,
   Req,
+  Sse,
 } from '@nestjs/common';
 import { RoomChatService } from './room-chat.service';
 import { CreateRoomChatDto } from './dto/create-room-chat.dto';
@@ -24,15 +25,22 @@ import {
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
 import { User } from '@prisma/client';
+import { fromEvent, map } from 'rxjs';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @ApiTags('RoomChat Table (token required)')
-@ApiBearerAuth('access-token')
 @Controller('room-chat')
-@UseGuards(JwtAuthGuard)
 export class RoomChatController {
-  constructor(private readonly roomChatService: RoomChatService) {}
+  constructor(
+    private readonly sse: SseConfigService,
+    private readonly event: EventEmitter2,
+    private readonly roomChatService: RoomChatService,
+  ) {}
 
   @Post()
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'create new room chat',
     description: `
@@ -49,6 +57,8 @@ export class RoomChatController {
   }
 
   @Get()
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'get all room chat',
   })
@@ -58,6 +68,8 @@ export class RoomChatController {
   }
 
   @Get(':order_id')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiParam({
     name: 'order_id',
     description: 'from DriverOrderHeader',
@@ -75,6 +87,8 @@ export class RoomChatController {
   }
 
   @Get('token')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'fetch room chat by token',
     description: `
@@ -94,6 +108,8 @@ export class RoomChatController {
   }
 
   @Patch(':order_id')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiParam({
     name: 'order_id',
     description: 'from DriverOrderHeader',
@@ -120,5 +136,25 @@ export class RoomChatController {
       updateRoomChatDto,
     );
     return new HttpException(updateRoomChat, HttpStatus.OK);
+  }
+
+  @Sse('sse/:order_id')
+  @ApiOperation({
+    summary: 'Stream room chat when new chat message is created',
+  })
+  @ApiParam({
+    name: 'order_id',
+    type: String,
+    example: 'get this ID from DriverOrderHeader table',
+  })
+  sseRoomChats(@Param('order_id') id: string) {
+    return fromEvent(
+      this.event,
+      `${this.sse.ROOMCHAT_OBSERVABLE_STRING}/${id}`,
+    ).pipe(
+      map((data) => {
+        return { data: data };
+      }),
+    );
   }
 }
