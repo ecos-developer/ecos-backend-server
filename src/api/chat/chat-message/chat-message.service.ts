@@ -2,16 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
 import { UpdateChatMessageDto } from './dto/update-chat-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { RoomChatService } from '../room-chat/room-chat.service';
 
 @Injectable()
 export class ChatMessageService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sse: SseConfigService,
+    private readonly event: EventEmitter2,
+    private readonly roomChat: RoomChatService,
+  ) {}
   async create(createChatMessageDto: CreateChatMessageDto) {
     const newChat = await this.prisma.chatMessage.create({
       data: {
         ...createChatMessageDto,
       },
     });
+    const allChatByOrderId = await this.roomChat.findOne(
+      createChatMessageDto.order_id,
+    );
+    this.event.emit(
+      `${this.sse.ROOMCHAT_OBSERVABLE_STRING}/${createChatMessageDto.order_id}`,
+      allChatByOrderId,
+    );
     return newChat;
   }
 
