@@ -65,7 +65,7 @@ export class RoomChatService {
     return findRoomChat;
   }
 
-  async findByUserId(user: User) {
+  async findByUserToken(user: User) {
     if (user.role === Role.DRIVER) {
       const findRoomChat = await this.prisma.roomChat.findMany({
         include: {

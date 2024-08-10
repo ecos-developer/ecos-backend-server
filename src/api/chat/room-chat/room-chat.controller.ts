@@ -9,8 +9,8 @@ import {
   HttpException,
   HttpStatus,
   MethodNotAllowedException,
-  Req,
   Sse,
+  Req,
 } from '@nestjs/common';
 import { RoomChatService } from './room-chat.service';
 import { CreateRoomChatDto } from './dto/create-room-chat.dto';
@@ -23,11 +23,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
-import { Request } from 'express';
-import { User } from '@prisma/client';
 import { fromEvent, map } from 'rxjs';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { User } from '@prisma/client';
+import { Request } from 'express';
 
 @ApiTags('RoomChat Table (token required)')
 @Controller('room-chat')
@@ -56,7 +56,7 @@ export class RoomChatController {
     return new HttpException(newRoomChat, HttpStatus.OK);
   }
 
-  @Get()
+  @Get('')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
@@ -81,27 +81,6 @@ export class RoomChatController {
     if (!findRoomChat) {
       throw new MethodNotAllowedException(
         `room chat with id ${id} is not found!`,
-      );
-    }
-    return new HttpException(findRoomChat, HttpStatus.OK);
-  }
-
-  @Get('token')
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({
-    summary: 'fetch room chat by token',
-    description: `
-      - verified whether it is driver or customer
-    `,
-  })
-  async findByUserId(@Req() req: Request) {
-    const findRoomChat = await this.roomChatService.findByUserId(
-      req.user as User,
-    );
-    if (!findRoomChat) {
-      throw new MethodNotAllowedException(
-        `${(req.user as User).email} did not have any room chat!`,
       );
     }
     return new HttpException(findRoomChat, HttpStatus.OK);
@@ -156,5 +135,20 @@ export class RoomChatController {
         return { data: data };
       }),
     );
+  }
+
+  @Post('user')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  async findRoomChatByUser(@Req() user: Request) {
+    const roomChat = await this.roomChatService.findByUserToken(
+      user.user as User,
+    );
+    if (!roomChat) {
+      throw new MethodNotAllowedException(
+        `user ${user.user} does not have room chat yet`,
+      );
+    }
+    return new HttpException(roomChat, HttpStatus.OK);
   }
 }

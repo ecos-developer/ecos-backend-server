@@ -25,7 +25,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       serveRoot: '/public',
     }),
     EventEmitterModule.forRoot({
-      global: true
+      global: true,
     }),
     AuthModule,
 

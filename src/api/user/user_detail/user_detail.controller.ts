@@ -17,12 +17,12 @@ import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 
 @ApiTags('UserDetail Table (token required, all role authorized)')
-@ApiBearerAuth('access-token')
 @Controller('user-detail')
 export class UserDetailController {
   constructor(private readonly userDetailService: UserDetailService) {}
 
   @Get('')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'get user detail by token' })
   async findOne(@Req() req: Request) {
@@ -31,6 +31,7 @@ export class UserDetailController {
   }
 
   @Patch('')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'update user detail by token (optional field)' })
   @ApiBody({
