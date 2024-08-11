@@ -24,7 +24,7 @@ const firebaseProvider = {
 
     return admin.initializeApp({
       credential: admin.credential.cert(firebaseConfig),
-      databaseURL: `ttps://ecos-31d77-default-rtdb.asia-southeast1.firebasedatabase.app`,
+      databaseURL: `https://ecos-31d77-default-rtdb.asia-southeast1.firebasedatabase.app`,
       storageBucket: `${firebaseConfig.projectId}.appspot.com`,
     });
   },
