@@ -127,6 +127,7 @@ export class RoomChatController {
     example: 'get this ID from DriverOrderHeader table',
   })
   sseRoomChats(@Param('order_id') id: string) {
+    console.log('New SSE connection for order ID:', id);
     return fromEvent(
       this.event,
       `${this.sse.ROOMCHAT_OBSERVABLE_STRING}/${id}`,

@@ -6,9 +6,10 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/api/auth/strategies/jwt.strategy';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { RoomChatService } from '../room-chat/room-chat.service';
+import { FirebaseModule } from 'src/firebase/firebase.module';
 
 @Module({
-  imports: [PrismaModule, PassportModule],
+  imports: [PrismaModule, PassportModule, FirebaseModule],
   controllers: [ChatMessageController],
   providers: [
     ChatMessageService,

@@ -3,16 +3,14 @@ import { CreateChatMessageDto } from './dto/create-chat-message.dto';
 import { UpdateChatMessageDto } from './dto/update-chat-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SseConfigService } from 'src/config/sse.config.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { RoomChatService } from '../room-chat/room-chat.service';
+import { FirebaseRepository } from 'src/firebase/firebase.repository';
 
 @Injectable()
 export class ChatMessageService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly sse: SseConfigService,
-    private readonly event: EventEmitter2,
-    private readonly roomChat: RoomChatService,
+    private firebaseRepository: FirebaseRepository,
   ) {}
   async create(createChatMessageDto: CreateChatMessageDto) {
     const newChat = await this.prisma.chatMessage.create({
@@ -20,13 +18,10 @@ export class ChatMessageService {
         ...createChatMessageDto,
       },
     });
-    const allChatByOrderId = await this.roomChat.findOne(
-      createChatMessageDto.order_id,
-    );
-    this.event.emit(
-      `${this.sse.ROOMCHAT_OBSERVABLE_STRING}/${createChatMessageDto.order_id}`,
-      allChatByOrderId,
-    );
+    const rtdbKey = `${this.sse.ROOMCHAT_OBSERVABLE_STRING}/${createChatMessageDto.order_id}`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
     return newChat;
   }
 
