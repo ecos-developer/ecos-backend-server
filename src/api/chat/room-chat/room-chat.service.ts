@@ -45,7 +45,15 @@ export class RoomChatService {
         order_id,
       },
       include: {
-        chat_message: true,
+        chat_message: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+              },
+            },
+          },
+        },
         driver_order_header: {
           include: {
             user: {
@@ -70,6 +78,13 @@ export class RoomChatService {
       const findRoomChat = await this.prisma.roomChat.findMany({
         include: {
           chat_message: {
+            include: {
+              user: {
+                include: {
+                  user_detail: true,
+                },
+              },
+            },
             orderBy: {
               created_at: 'desc',
             },
@@ -98,6 +113,13 @@ export class RoomChatService {
     const findRoomChat = await this.prisma.roomChat.findMany({
       include: {
         chat_message: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+              },
+            },
+          },
           orderBy: {
             created_at: 'desc',
           },
