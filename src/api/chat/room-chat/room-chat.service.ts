@@ -117,8 +117,10 @@ export class RoomChatService {
     const findRoomChat = await this.prisma.roomChat.findMany({
       where: {
         driver_order_header: {
-          user: {
-            user_id: user.user_id,
+          customer_order_header: {
+            every: {
+              user_id: user.user_id,
+            },
           },
         },
       },
