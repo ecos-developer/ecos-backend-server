@@ -8,10 +8,16 @@ import {
 import { Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ApproveUserByIdDto } from './dto/approve-user-by-id.dto';
+import { FirebaseService } from 'src/firebase/firebase.service';
+import { SseConfigService } from 'src/config/sse.config.service';
 
 @Injectable()
 export class AdminApprovalService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly firebase: FirebaseService,
+    private readonly sse: SseConfigService,
+  ) {}
 
   async getAllUser(user: User) {
     // ADMIN VALIDATION
@@ -76,6 +82,10 @@ export class AdminApprovalService {
         is_admin_approved: !findUser.user_detail.is_admin_approved,
       },
     });
+    await this.firebase.userDetailRealtime(
+      this.sse.USERDETAIL_OBSERVABLE_STRING,
+      user.user_id,
+    );
     return new HttpException(updateUserDetail, HttpStatus.CREATED);
   }
 }
