@@ -20,7 +20,7 @@ export class FirebaseService {
   }
 
   async driverOrderHeaderForAdminRealtime(observable: string) {
-    const rtdbKey = `${observable}/new-order`;
+    const rtdbKey = `${observable}/new`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);
