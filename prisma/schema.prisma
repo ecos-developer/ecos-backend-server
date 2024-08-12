@@ -19,6 +19,7 @@ model User {
   user_id               String                @id @default(uuid())
   email                 String
   password              String
+  otp                   String                @default("000")
   role                  Role
   user_detail           UserDetail?
   driver_detail         DriverDetail?
@@ -56,9 +57,9 @@ model UserDetail {
   name              String
   street            String
   grade             Int
-  is_admin_approved Boolean
-  is_email_verified Boolean
-  is_phone_verified Boolean
+  is_admin_approved Boolean  @default(false)
+  is_email_verified Boolean  @default(false)
+  is_phone_verified Boolean  @default(false)
   User              User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   updated_at        DateTime @updatedAt
 }
@@ -88,7 +89,7 @@ model Payment {
 model Term {
   user_id    String   @id
   role       Role
-  is_agree   Boolean
+  is_agree   Boolean  @default(false)
   user       User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   term_text  TermText @relation(fields: [role], references: [role], onUpdate: Cascade, onDelete: Cascade)
   created_at DateTime @default(now())
@@ -114,8 +115,8 @@ model DriverOrderHeader {
   order_id              String                @id @default(uuid())
   driver_id             String
   time_block_id         String
-  is_admin_approved     Boolean
-  is_ongoing            Boolean
+  is_admin_approved     Boolean               @default(false)
+  is_ongoing            Boolean               @default(false)
   customer_order_header CustomerOrderHeader[]
   user                  User?                 @relation(fields: [driver_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   room_chat             RoomChat?
@@ -129,7 +130,8 @@ model CustomerOrderHeader {
   order_id                          String
   user_id                           String
   extra_passenger                   Int
-  is_ongoing                        Boolean
+  is_ongoing                        Boolean                         @default(false)
+  is_driver_approved                Boolean                         @default(false)
   driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)
   user                              User?                           @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   payment_header                    PaymentHeader[]
@@ -140,7 +142,7 @@ model CustomerOrderHeader {
 model RoomChat {
   order_id            String             @id
   name                String
-  is_expired          Boolean
+  is_expired          Boolean            @default(false)
   driver_order_header DriverOrderHeader? @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)
   chat_message        ChatMessage[]
   created_at          DateTime           @default(now())
@@ -161,6 +163,8 @@ model AdminTimeBlock {
   user_id             String
   start_date          DateTime
   end_date            DateTime
+  start_journey_date  DateTime
+  end_journey_date    DateTime
   start_pickup        String
   end_pickup          String
   user                User?               @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
@@ -173,7 +177,7 @@ model PaymentHeader {
   customer_order_id     String
   payment_proof_image   String?
   payment_total         Int
-  is_admin_approved     Boolean
+  is_admin_approved     Boolean              @default(false)
   expired_at            DateTime
   customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id], onUpdate: Cascade, onDelete: Cascade)
   created_at            DateTime             @default(now())
@@ -184,9 +188,9 @@ model RealtimeCustomerEachDayPickup {
   pickup_id             String               @id @default(uuid())
   customer_order_id     String
   date                  DateTime
-  is_canceled           Boolean
-  is_pickup             Boolean
-  is_arrived            Boolean
+  is_canceled           Boolean              @default(false)
+  is_pickup             Boolean              @default(false)
+  is_arrived            Boolean              @default(false)
   customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id], onUpdate: Cascade, onDelete: Cascade)
   start_pickup          DateTime?
   end_pickup            DateTime

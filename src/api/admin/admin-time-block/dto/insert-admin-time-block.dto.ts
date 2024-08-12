@@ -20,6 +20,22 @@ export class InsertAdminTimeBlockDto {
 
   @IsString()
   @ApiProperty({
+    description: 'start journey date order for driver',
+    type: String,
+    example: '2024-08-16T00:00:00Z',
+  })
+  start_journey_date: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'End journey date order for driver',
+    type: String,
+    example: '2024-08-16T00:00:00Z',
+  })
+  end_journey_date: string;
+
+  @IsString()
+  @ApiProperty({
     description: 'Start pickup for driver',
     type: String,
     example: '07:00',

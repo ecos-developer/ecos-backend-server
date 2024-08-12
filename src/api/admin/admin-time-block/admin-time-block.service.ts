@@ -98,10 +98,7 @@ export class AdminTimeBlockService {
       data: {
         admin_time_block: {
           create: {
-            start_date: insertAdminTimeBlockDto.start_date,
-            end_date: insertAdminTimeBlockDto.end_date,
-            start_pickup: insertAdminTimeBlockDto.start_pickup,
-            end_pickup: insertAdminTimeBlockDto.end_pickup,
+            ...insertAdminTimeBlockDto,
           },
         },
       },
@@ -155,7 +152,7 @@ export class AdminTimeBlockService {
         time_block_id: id,
       },
       data: {
-        ...updateAdminTimeBlockDto
+        ...updateAdminTimeBlockDto,
       },
       include: {
         user: true,
