@@ -7,6 +7,7 @@ import { JwtStrategy } from 'src/api/auth/strategies/jwt.strategy';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { RoomChatService } from '../room-chat/room-chat.service';
 import { FirebaseModule } from 'src/firebase/firebase.module';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Module({
   imports: [PrismaModule, PassportModule, FirebaseModule],
@@ -16,6 +17,7 @@ import { FirebaseModule } from 'src/firebase/firebase.module';
     JwtStrategy,
     SseConfigService,
     RoomChatService,
+    FirebaseService,
   ],
 })
 export class ChatMessageModule {}

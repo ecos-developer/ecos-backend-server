@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { UserDetailDto } from './dto/user_detail.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { FirebaseService } from 'src/firebase/firebase.service';
+import { SseConfigService } from 'src/config/sse.config.service';
 
 @Injectable()
 export class UserDetailService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sse: SseConfigService,
+    private readonly firebase: FirebaseService,
+  ) {}
 
   async findOne(user: User) {
     const userDetail = await this.prisma.user.findUnique({
@@ -46,6 +52,10 @@ export class UserDetailService {
         user_detail: true,
       },
     });
+    await this.firebase.userDetailRealtime(
+      this.sse.USERDETAIL_OBSERVABLE_STRING,
+      user.user_id,
+    );
     return updateUser;
   }
 }

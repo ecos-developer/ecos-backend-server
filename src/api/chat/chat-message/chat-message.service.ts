@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
 import { UpdateChatMessageDto } from './dto/update-chat-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 import { SseConfigService } from 'src/config/sse.config.service';
-import { FirebaseRepository } from 'src/firebase/firebase.repository';
 
 @Injectable()
 export class ChatMessageService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly firebase: FirebaseService,
     private readonly sse: SseConfigService,
-    private firebaseRepository: FirebaseRepository,
   ) {}
   async create(createChatMessageDto: CreateChatMessageDto) {
     const newChat = await this.prisma.chatMessage.create({
@@ -18,10 +18,10 @@ export class ChatMessageService {
         ...createChatMessageDto,
       },
     });
-    const rtdbKey = `${this.sse.ROOMCHAT_OBSERVABLE_STRING}/${createChatMessageDto.order_id}`;
-    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
-    const value = checkStatus ? !checkStatus : true;
-    this.firebaseRepository.setData(rtdbKey, value);
+    await this.firebase.chatMessageRealtime(
+      this.sse.ROOMCHAT_OBSERVABLE_STRING,
+      createChatMessageDto.order_id,
+    );
     return newChat;
   }
 
