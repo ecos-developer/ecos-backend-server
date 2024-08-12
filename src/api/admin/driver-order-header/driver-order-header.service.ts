@@ -155,6 +155,13 @@ export class DriverOrderHeaderService {
       where: {
         order_id: id,
       },
+      include: {
+        user: {
+          include: {
+            user_detail: true,
+          },
+        },
+      },
       data: {
         ...updateDriverOrderHeaderDto,
       },
