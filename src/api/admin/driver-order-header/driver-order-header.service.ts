@@ -34,6 +34,9 @@ export class DriverOrderHeaderService {
 
   async findAll() {
     const allDriverOrderHeader = await this.prisma.driverOrderHeader.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
       include: {
         user: {
           include: {
@@ -120,6 +123,9 @@ export class DriverOrderHeaderService {
           },
         },
         driver_order_header: {
+          orderBy: {
+            created_at: 'desc',
+          },
           include: {
             admin_time_block: true,
             customer_order_header: {
