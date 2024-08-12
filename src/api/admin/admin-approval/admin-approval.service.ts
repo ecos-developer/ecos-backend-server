@@ -84,7 +84,7 @@ export class AdminApprovalService {
     });
     await this.firebase.userDetailRealtime(
       this.sse.USERDETAIL_OBSERVABLE_STRING,
-      user.user_id,
+      approveUserByIdDto.id,
     );
     return new HttpException(updateUserDetail, HttpStatus.CREATED);
   }
