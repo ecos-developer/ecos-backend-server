@@ -76,6 +76,13 @@ export class RoomChatService {
   async findByUserToken(user: User) {
     if (user.role === Role.DRIVER) {
       const findRoomChat = await this.prisma.roomChat.findMany({
+        where: {
+          driver_order_header: {
+            user: {
+              user_id: user.user_id,
+            },
+          },
+        },
         include: {
           chat_message: {
             include: {
@@ -92,9 +99,6 @@ export class RoomChatService {
           driver_order_header: {
             include: {
               user: {
-                where: {
-                  user_id: user.user_id,
-                },
                 include: {
                   user_detail: true,
                   driver_detail: {
@@ -111,6 +115,13 @@ export class RoomChatService {
       return findRoomChat;
     }
     const findRoomChat = await this.prisma.roomChat.findMany({
+      where: {
+        driver_order_header: {
+          user: {
+            user_id: user.user_id,
+          },
+        },
+      },
       include: {
         chat_message: {
           include: {
@@ -129,8 +140,9 @@ export class RoomChatService {
             customer_order_header: {
               include: {
                 user: {
-                  where: {
-                    user_id: user.user_id,
+                  include: {
+                    user_detail: true,
+                    customer_detail: true,
                   },
                 },
               },
