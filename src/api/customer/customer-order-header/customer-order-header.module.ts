@@ -5,14 +5,19 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/api/auth/strategies/jwt.strategy';
 import { DriverOrderHeaderService } from 'src/api/admin/driver-order-header/driver-order-header.service';
+import { FirebaseModule } from 'src/firebase/firebase.module';
+import { FirebaseService } from 'src/firebase/firebase.service';
+import { SseConfigService } from 'src/config/sse.config.service';
 
 @Module({
-  imports: [PrismaModule, PassportModule],
+  imports: [PrismaModule, PassportModule, FirebaseModule],
   controllers: [CustomerOrderHeaderController],
   providers: [
     CustomerOrderHeaderService,
     DriverOrderHeaderService,
     JwtStrategy,
+    FirebaseService,
+    SseConfigService,
   ],
 })
 export class CustomerOrderHeaderModule {}

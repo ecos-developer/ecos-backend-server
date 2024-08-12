@@ -6,4 +6,5 @@ export class SseConfigService {
   readonly LOCATION_OBSERVABLE_STRING = 'location-sse';
   readonly ROOMCHAT_OBSERVABLE_STRING = 'roomchat-sse';
   readonly USERDETAIL_OBSERVABLE_STRING = 'userdetail-sse';
+  readonly DRIVERORDERHEADER_OBSERVABLE_STRING = 'driverorderheader-sse';
 }

@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateDriverOrderHeaderDto } from './dto/create-driver-order-header.dto';
 import { UpdateDriverOrderHeaderDto } from './dto/update-driver-order-header.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class DriverOrderHeaderService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sse: SseConfigService,
+    private readonly firebase: FirebaseService,
+  ) {}
 
   async create(createDriverOrderHeaderDto: CreateDriverOrderHeaderDto) {
     const newDriverOrderHeader = await this.prisma.driverOrderHeader.create({
@@ -16,7 +22,13 @@ export class DriverOrderHeaderService {
         is_ongoing: false,
       },
     });
-
+    await this.firebase.driverOrderHeaderForAdminRealtime(
+      this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
+    );
+    await this.firebase.driverOrderHeaderEachRealtime(
+      this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
+      newDriverOrderHeader.order_id,
+    );
     return newDriverOrderHeader;
   }
 
@@ -141,7 +153,10 @@ export class DriverOrderHeaderService {
         ...updateDriverOrderHeaderDto,
       },
     });
-
+    await this.firebase.driverOrderHeaderEachRealtime(
+      this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
+      id,
+    );
     return updateDriverOrderById;
   }
 }

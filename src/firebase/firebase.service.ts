@@ -18,4 +18,18 @@ export class FirebaseService {
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);
   }
+
+  async driverOrderHeaderForAdminRealtime(observable: string) {
+    const rtdbKey = `${observable}/new-order`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
+
+  async driverOrderHeaderEachRealtime(observable: string, order_id: string) {
+    const rtdbKey = `${observable}/${order_id}`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
 }
