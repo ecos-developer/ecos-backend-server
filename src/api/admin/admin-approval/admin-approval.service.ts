@@ -29,6 +29,12 @@ export class AdminApprovalService {
       include: {
         user_detail: true,
       },
+      orderBy: {
+        created_at: 'desc',
+        user_detail: {
+          is_email_verified: 'desc',
+        },
+      },
       where: {
         role: {
           equals: Role.CUSTOMER,
