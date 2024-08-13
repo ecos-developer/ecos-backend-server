@@ -7,4 +7,5 @@ export class SseConfigService {
   readonly ROOMCHAT_OBSERVABLE_STRING = 'roomchat-sse';
   readonly USERDETAIL_OBSERVABLE_STRING = 'userdetail-sse';
   readonly DRIVERORDERHEADER_OBSERVABLE_STRING = 'driverorderheader-sse';
+  readonly CUSTOMERORDERHEADER_OBSERVABLE_STRING = 'customerorderheader-sse';
 }

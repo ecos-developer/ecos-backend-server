@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateCustomerOrderHeaderDto } from './dto/create-customer-order-header.dto';
 import { UpdateCustomerOrderHeaderDto } from './dto/update-customer-order-header.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class CustomerOrderHeaderService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sse: SseConfigService,
+    private readonly firebase: FirebaseService,
+  ) {}
   async create(createCustomerOrderHeaderDto: CreateCustomerOrderHeaderDto) {
     const newCustomerOrder = await this.prisma.customerOrderHeader.create({
       data: {
@@ -22,6 +28,13 @@ export class CustomerOrderHeaderService {
         realtime_customer_each_day_pickup: true,
       },
     });
+    await this.firebase.customerOrderHeaderForAdminRealtime(
+      this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
+    );
+    await this.firebase.customerOrderHeaderEachRealtime(
+      this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
+      newCustomerOrder.customer_order_id,
+    );
     return newCustomerOrder;
   }
 
@@ -128,6 +141,10 @@ export class CustomerOrderHeaderService {
         },
       });
 
+    await this.firebase.customerOrderHeaderEachRealtime(
+      this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
+      id,
+    );
     return updateCustomerOrderHeader;
   }
 }
