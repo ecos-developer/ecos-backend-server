@@ -31,9 +31,6 @@ export class AdminApprovalService {
       },
       orderBy: {
         created_at: 'desc',
-        user_detail: {
-          is_email_verified: 'desc',
-        },
       },
       where: {
         role: {
