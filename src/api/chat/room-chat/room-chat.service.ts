@@ -118,7 +118,7 @@ export class RoomChatService {
       where: {
         driver_order_header: {
           customer_order_header: {
-            every: {
+            some: {
               user_id: user.user_id,
             },
           },
