@@ -10,6 +10,7 @@ import {
   HttpStatus,
   NotFoundException,
   MethodNotAllowedException,
+  Delete,
 } from '@nestjs/common';
 import { CustomerOrderHeaderService } from './customer-order-header.service';
 import { CreateCustomerOrderHeaderDto } from './dto/create-customer-order-header.dto';
@@ -134,5 +135,19 @@ export class CustomerOrderHeaderController {
         updateCustomerOrderHeaderDto,
       );
     return new HttpException(updateCustomerOrderHeader, HttpStatus.CREATED);
+  }
+
+  @Delete(':customer_order_id')
+  @ApiOperation({ summary: 'delete CustomerOrderHeader by customer_order_id' })
+  @ApiParam({
+    name: 'customer_order_id',
+    description: 'customer_order_id for the customer order',
+    type: String,
+    example: 'get this from CustomerOrderHeader table',
+  })
+  async deleteById(@Param('customer_order_id') id: string) {
+    const findCustomerOrderHeader =
+      await this.customerOrderHeaderService.delete(id);
+    return new HttpException(findCustomerOrderHeader, HttpStatus.CREATED);
   }
 }

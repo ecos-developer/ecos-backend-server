@@ -148,4 +148,13 @@ export class CustomerOrderHeaderService {
     );
     return updateCustomerOrderHeader;
   }
+
+  async delete(customer_order_id: string) {
+    const deleteCustomerOrder = await this.prisma.customerOrderHeader.delete({
+      where: {
+        customer_order_id,
+      },
+    });
+    return deleteCustomerOrder;
+  }
 }
