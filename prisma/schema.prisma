@@ -188,6 +188,9 @@ model RealtimeCustomerEachDayPickup {
   pickup_id             String               @id @default(uuid())
   customer_order_id     String
   date                  DateTime
+  priority              Int
+  is_started            Boolean              @default(false)
+  is_home_arrived       Boolean              @default(false)
   is_canceled           Boolean              @default(false)
   is_pickup             Boolean              @default(false)
   is_arrived            Boolean              @default(false)

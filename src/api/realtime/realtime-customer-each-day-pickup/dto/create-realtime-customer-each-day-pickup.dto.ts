@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateRealtimeCustomerEachDayPickupDto {
   @IsString()
@@ -37,6 +43,20 @@ export class CreateRealtimeCustomerEachDayPickupDto {
   })
   is_arrived: boolean;
 
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    example: false,
+  })
+  is_started: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    example: false,
+  })
+  is_home_arrived: boolean;
+
   @IsString()
   @IsOptional()
   @ApiProperty({
@@ -50,4 +70,11 @@ export class CreateRealtimeCustomerEachDayPickupDto {
     example: '2024-07-15T00:00:00Z',
   })
   end_pickup: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 1,
+  })
+  priority: number;
 }
