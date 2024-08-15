@@ -49,4 +49,18 @@ export class FirebaseService {
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);
   }
+
+  async paymentForAdminRealtime(observable: string) {
+    const rtdbKey = `${observable}/new`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
+
+  async paymentEachRealtime(observable: string, customer_payment_id: string) {
+    const rtdbKey = `${observable}/${customer_payment_id}`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
 }

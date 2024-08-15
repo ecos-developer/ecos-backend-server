@@ -8,4 +8,5 @@ export class SseConfigService {
   readonly USERDETAIL_OBSERVABLE_STRING = 'userdetail-sse';
   readonly DRIVERORDERHEADER_OBSERVABLE_STRING = 'driverorderheader-sse';
   readonly CUSTOMERORDERHEADER_OBSERVABLE_STRING = 'customerorderheader-sse';
+  readonly PAYMENTHEADER_OBSERVABLE_STRING = 'paymentheader-sse';
 }

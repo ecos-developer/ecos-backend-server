@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateCustomerPaymentHeaderDto } from './dto/create-customer-payment-header.dto';
 import { UpdateCustomerPaymentHeaderDto } from './dto/update-customer-payment-header.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class CustomerPaymentHeaderService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sse: SseConfigService,
+    private readonly firebase: FirebaseService,
+  ) {}
 
   async create(createCustomerPaymentHeaderDto: CreateCustomerPaymentHeaderDto) {
     const expired_at = new Date(new Date().getTime() + 12 * 60 * 60 * 1000);
@@ -16,6 +22,13 @@ export class CustomerPaymentHeaderService {
         expired_at,
       },
     });
+    await this.firebase.paymentForAdminRealtime(
+      this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
+    );
+    await this.firebase.paymentEachRealtime(
+      this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
+      newPaymentHeader.customer_payment_id,
+    );
     return newPaymentHeader;
   }
 
@@ -87,6 +100,10 @@ export class CustomerPaymentHeaderService {
         ...updateCustomerPaymentHeaderDto,
       },
     });
+    await this.firebase.paymentEachRealtime(
+      this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
+      customer_payment_id,
+    );
     return updatePaymentHeader;
   }
 }
