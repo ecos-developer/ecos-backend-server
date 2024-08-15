@@ -17,6 +17,7 @@ import { RealtimeLocationModule } from './api/realtime/realtime-location/realtim
 import { RealtimeCustomerEachDayPickupModule } from './api/realtime/realtime-customer-each-day-pickup/realtime-customer-each-day-pickup.module';
 import { NotificationModule } from './api/notification/notification.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EmailModule } from './api/email/email.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot({
       global: true,
     }),
+
     AuthModule,
 
     // ALL USER
@@ -52,6 +54,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
     // NOTIFICATION
     NotificationModule,
+
+    EmailModule,
   ],
 })
 export class AppModule {}
