@@ -34,6 +34,9 @@ export class CustomerPaymentHeaderService {
 
   async findAll() {
     const allCustomerPayment = await this.prisma.paymentHeader.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
       include: {
         customer_order_header: {
           include: {
