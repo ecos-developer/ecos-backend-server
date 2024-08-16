@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateRealtimeCustomerEachDayPickupDto } from './dto/create-realtime-customer-each-day-pickup.dto';
 import { UpdateRealtimeCustomerEachDayPickupDto } from './dto/update-realtime-customer-each-day-pickup.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
+import { SseConfigService } from 'src/config/sse.config.service';
 
 @Injectable()
 export class RealtimeCustomerEachDayPickupService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly firebase: FirebaseService,
+    private readonly sse: SseConfigService,
+  ) {}
 
   async create(
     createRealtimeCustomerEachDayPickupDto: CreateRealtimeCustomerEachDayPickupDto,
@@ -37,6 +43,13 @@ export class RealtimeCustomerEachDayPickupService {
         },
       },
     });
+    await this.firebase.dailyCustomerPickupForAdminRealtime(
+      this.sse.DAILYPICKUP_OBSERVABLE_STRING,
+    );
+    await this.firebase.dailyCustomerPickupEachRealtime(
+      this.sse.DAILYPICKUP_OBSERVABLE_STRING,
+      newPickup.pickup_id,
+    );
     return newPickup;
   }
 
@@ -135,6 +148,14 @@ export class RealtimeCustomerEachDayPickupService {
           },
         },
       },
+    );
+
+    await this.firebase.dailyCustomerPickupForAdminRealtime(
+      this.sse.DAILYPICKUP_OBSERVABLE_STRING,
+    );
+    await this.firebase.dailyCustomerPickupEachRealtime(
+      this.sse.DAILYPICKUP_OBSERVABLE_STRING,
+      pickup_id,
     );
     return updatePickup;
   }

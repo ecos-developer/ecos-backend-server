@@ -9,4 +9,5 @@ export class SseConfigService {
   readonly DRIVERORDERHEADER_OBSERVABLE_STRING = 'driverorderheader-sse';
   readonly CUSTOMERORDERHEADER_OBSERVABLE_STRING = 'customerorderheader-sse';
   readonly PAYMENTHEADER_OBSERVABLE_STRING = 'paymentheader-sse';
+  readonly DAILYPICKUP_OBSERVABLE_STRING = 'dailypickup-sse';
 }

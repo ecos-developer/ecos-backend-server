@@ -63,4 +63,18 @@ export class FirebaseService {
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);
   }
+
+  async dailyCustomerPickupForAdminRealtime(observable: string) {
+    const rtdbKey = `${observable}/new`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
+
+  async dailyCustomerPickupEachRealtime(observable: string, pickup_id: string) {
+    const rtdbKey = `${observable}/${pickup_id}`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
 }
