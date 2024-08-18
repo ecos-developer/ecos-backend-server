@@ -113,4 +113,15 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
+  async findByEmail(email: string) {
+    const findUser = await this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+      include: {
+        user_detail: true,
+      },
+    });
+    return findUser;
+  }
 }

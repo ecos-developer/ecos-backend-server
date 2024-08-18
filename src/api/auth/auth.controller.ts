@@ -9,9 +9,11 @@ import {
   MethodNotAllowedException,
   HttpException,
   HttpStatus,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { Request } from 'express';
 import { LocalGuard } from '../auth/guards/local.guard';
@@ -55,5 +57,21 @@ export class AuthController {
   })
   customer(@Body() registerAuthDto: RegisterAuthDto) {
     return this.authService.register(registerAuthDto);
+  }
+
+  @Get(':email')
+  @ApiOperation({ summary: 'get specific user by email' })
+  @ApiParam({
+    name: 'email',
+    description: 'email of the admin time block',
+    type: 'string',
+    example: '2c1390a4-0b50-48fb-8145-bd8a90558fc7',
+  })
+  async findByEmail(@Param('email') email: string) {
+    const findUser = await this.authService.findByEmail(email);
+    if (!findUser) {
+      throw new MethodNotAllowedException(`${email} is not registered user!`);
+    }
+    return new HttpException(findUser, HttpStatus.OK);
   }
 }
