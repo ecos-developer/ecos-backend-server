@@ -195,6 +195,6 @@ model RealtimeCustomerEachDayPickup {
   is_pickup             Boolean              @default(false)
   is_arrived            Boolean              @default(false)
   customer_order_header CustomerOrderHeader? @relation(fields: [customer_order_id], references: [customer_order_id], onUpdate: Cascade, onDelete: Cascade)
-  start_pickup          DateTime?
-  end_pickup            DateTime
+  start_pickup          String?
+  end_pickup            String
 }
