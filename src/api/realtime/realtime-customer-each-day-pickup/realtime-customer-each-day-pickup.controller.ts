@@ -80,6 +80,26 @@ export class RealtimeCustomerEachDayPickupController {
     return new HttpException(findPickup, HttpStatus.OK);
   }
 
+  @Get('user/:user_id')
+  @ApiOperation({
+    summary: 'get RealtimeCustomerEachDayPickup by user_id',
+  })
+  @ApiParam({
+    name: 'user_id',
+    description: 'user_id for the User table',
+    type: String,
+    example: 'get this ID from User table',
+  })
+  async findByDriverId(@Param('user_id') id: string) {
+    const findPickup =
+      await this.realtimeCustomerEachDayPickupService.findByDriverId(id);
+
+    if (!findPickup) {
+      throw new MethodNotAllowedException(`User with id $P{id} is not found!`);
+    }
+    return new HttpException(findPickup, HttpStatus.OK);
+  }
+
   @Patch(':pickup_id')
   @ApiOperation({
     summary: 'update RealtimeCustomerEachDayPickup by ID',

@@ -34,7 +34,11 @@ export class RealtimeCustomerEachDayPickupService {
                 user: {
                   include: {
                     user_detail: true,
-                    driver_detail: true,
+                    driver_detail: {
+                      include: {
+                        payment: true,
+                      },
+                    },
                   },
                 },
               },
@@ -69,7 +73,50 @@ export class RealtimeCustomerEachDayPickupService {
                 user: {
                   include: {
                     user_detail: true,
-                    driver_detail: true,
+                    driver_detail: {
+                      include: {
+                        payment: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return allPickup;
+  }
+
+  async findByDriverId(driver_id: string) {
+    const allPickup = await this.prisma.realtimeCustomerEachDayPickup.findMany({
+      where: {
+        customer_order_header: {
+          driver_order_header: {
+            driver_id,
+          },
+        },
+      },
+      include: {
+        customer_order_header: {
+          include: {
+            user: {
+              include: {
+                user_detail: true,
+                customer_detail: true,
+              },
+            },
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: {
+                      include: {
+                        payment: true,
+                      },
+                    },
                   },
                 },
               },
@@ -101,7 +148,11 @@ export class RealtimeCustomerEachDayPickupService {
                   user: {
                     include: {
                       user_detail: true,
-                      driver_detail: true,
+                      driver_detail: {
+                        include: {
+                          payment: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -139,7 +190,11 @@ export class RealtimeCustomerEachDayPickupService {
                   user: {
                     include: {
                       user_detail: true,
-                      driver_detail: true,
+                      driver_detail: {
+                        include: {
+                          payment: true,
+                        },
+                      },
                     },
                   },
                 },
