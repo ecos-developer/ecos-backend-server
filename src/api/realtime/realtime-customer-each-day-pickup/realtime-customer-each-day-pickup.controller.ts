@@ -95,7 +95,7 @@ export class RealtimeCustomerEachDayPickupController {
       await this.realtimeCustomerEachDayPickupService.findByDriverId(id);
 
     if (!findPickup) {
-      throw new MethodNotAllowedException(`User with id $P{id} is not found!`);
+      throw new MethodNotAllowedException(`User with id ${id} is not found!`);
     }
     return new HttpException(findPickup, HttpStatus.OK);
   }
