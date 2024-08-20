@@ -18,6 +18,7 @@ import { RealtimeCustomerEachDayPickupModule } from './api/realtime/realtime-cus
 import { NotificationModule } from './api/notification/notification.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EmailModule } from './api/email/email.module';
+import { PrivacyModule } from './api/privacy/privacy.module';
 
 @Module({
   imports: [
@@ -56,6 +57,8 @@ import { EmailModule } from './api/email/email.module';
     NotificationModule,
 
     EmailModule,
+
+    PrivacyModule,
   ],
 })
 export class AppModule {}
