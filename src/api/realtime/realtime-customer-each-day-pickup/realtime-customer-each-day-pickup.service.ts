@@ -54,6 +54,10 @@ export class RealtimeCustomerEachDayPickupService {
       this.sse.DAILYPICKUP_OBSERVABLE_STRING,
       newPickup.pickup_id,
     );
+    await this.firebase.dailyCustomerPickupByDriverIdRealtime(
+      this.sse.DAILYPICKUP_OBSERVABLE_STRING,
+      newPickup.customer_order_header.driver_order_header.user.user_id,
+    );
     return newPickup;
   }
 
@@ -211,6 +215,10 @@ export class RealtimeCustomerEachDayPickupService {
     await this.firebase.dailyCustomerPickupEachRealtime(
       this.sse.DAILYPICKUP_OBSERVABLE_STRING,
       pickup_id,
+    );
+    await this.firebase.dailyCustomerPickupByDriverIdRealtime(
+      this.sse.DAILYPICKUP_OBSERVABLE_STRING,
+      updatePickup.customer_order_header.driver_order_header.user.user_id,
     );
     return updatePickup;
   }

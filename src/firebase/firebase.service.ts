@@ -77,4 +77,14 @@ export class FirebaseService {
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);
   }
+
+  async dailyCustomerPickupByDriverIdRealtime(
+    observable: string,
+    driver_id: string,
+  ) {
+    const rtdbKey = `${observable}/driver/${driver_id}`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
 }
