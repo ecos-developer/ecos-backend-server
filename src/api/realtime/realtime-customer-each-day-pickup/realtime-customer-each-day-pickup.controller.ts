@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   MethodNotAllowedException,
+  Delete,
 } from '@nestjs/common';
 import { RealtimeCustomerEachDayPickupService } from './realtime-customer-each-day-pickup.service';
 import { CreateRealtimeCustomerEachDayPickupDto } from './dto/create-realtime-customer-each-day-pickup.dto';
@@ -133,5 +134,30 @@ export class RealtimeCustomerEachDayPickupController {
       updateRealtimeCustomerEachDayPickupDto,
     );
     return new HttpException(updatePickup, HttpStatus.OK);
+  }
+
+  @Delete(':pickup_id')
+  @ApiOperation({
+    summary: 'delete RealtimeCustomerEachDayPickup by ID',
+  })
+  @ApiParam({
+    name: 'pickup_id',
+    description: 'pickup_id for the RealtimeCustomerEachDayPickup',
+    type: String,
+    example: 'get this ID from RealtimeCustomerEachDayPickup table',
+  })
+  async delete(@Param('pickup_id') id: string) {
+    const findPickup =
+      await this.realtimeCustomerEachDayPickupService.findOne(id);
+
+    if (!findPickup) {
+      throw new MethodNotAllowedException(
+        `RealtimeCustomerEachDayPickup with id $P{id} is not found!`,
+      );
+    }
+
+    const deletePickup =
+      await this.realtimeCustomerEachDayPickupService.delete(id);
+    return new HttpException(deletePickup, HttpStatus.OK);
   }
 }

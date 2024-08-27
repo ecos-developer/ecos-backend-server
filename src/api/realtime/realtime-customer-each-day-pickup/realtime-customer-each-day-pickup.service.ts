@@ -222,4 +222,15 @@ export class RealtimeCustomerEachDayPickupService {
     );
     return updatePickup;
   }
+
+  async delete(pickup_id: string) {
+    const deletePickup = await this.prisma.realtimeCustomerEachDayPickup.delete(
+      {
+        where: {
+          pickup_id,
+        },
+      },
+    );
+    return deletePickup;
+  }
 }
