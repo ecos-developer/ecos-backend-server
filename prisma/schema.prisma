@@ -189,6 +189,8 @@ model RealtimeCustomerEachDayPickup {
   customer_order_id     String
   date                  DateTime
   priority              Int
+  is_jemput             Boolean              @default(true)
+  is_anter              Boolean              @default(true)
   is_started            Boolean              @default(false)
   is_home_arrived       Boolean              @default(false)
   is_canceled           Boolean              @default(false)

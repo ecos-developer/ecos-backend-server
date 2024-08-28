@@ -55,6 +55,20 @@ export class CreateRealtimeCustomerEachDayPickupDto {
   @ApiProperty({
     example: false,
   })
+  is_anter: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    example: false,
+  })
+  is_jemput: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    example: false,
+  })
   is_home_arrived: boolean;
 
   @IsString()
