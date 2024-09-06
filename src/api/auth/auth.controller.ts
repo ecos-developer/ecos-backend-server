@@ -11,6 +11,7 @@ import {
   HttpStatus,
   Get,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -63,7 +64,7 @@ export class AuthController {
   @ApiOperation({ summary: 'get specific user by email' })
   @ApiParam({
     name: 'email',
-    description: 'email of the admin time block',
+    description: 'email of user',
     type: 'string',
     example: '2c1390a4-0b50-48fb-8145-bd8a90558fc7',
   })
@@ -73,5 +74,22 @@ export class AuthController {
       throw new MethodNotAllowedException(`${email} is not registered user!`);
     }
     return new HttpException(findUser, HttpStatus.OK);
+  }
+
+  @Delete(':user_id')
+  @ApiOperation({ summary: 'delete specific user by user_id' })
+  @ApiParam({
+    name: 'user_id',
+    description: 'user_id of user',
+    type: 'string',
+    example: 'get this from users table',
+  })
+  async deleteById(@Param('user_id') user_id: string) {
+    const findUser = await this.authService.findById(user_id);
+    if (!findUser) {
+      throw new MethodNotAllowedException(`${user_id} is not registered user!`);
+    }
+    const deleteUser = await this.authService.deleteUserById(user_id);
+    return new HttpException(deleteUser, HttpStatus.OK);
   }
 }

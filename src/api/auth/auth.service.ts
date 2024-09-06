@@ -124,4 +124,12 @@ export class AuthService {
     });
     return findUser;
   }
+  async deleteUserById(user_id: string) {
+    const deleteUser = await this.prisma.user.delete({
+      where: {
+        user_id,
+      },
+    });
+    return deleteUser;
+  }
 }

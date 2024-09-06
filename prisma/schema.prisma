@@ -130,6 +130,8 @@ model CustomerOrderHeader {
   order_id                          String
   user_id                           String
   extra_passenger                   Int
+  cancel_pulang                     Boolean                         @default(false)
+  cancel_pergi                      Boolean                         @default(false)
   is_ongoing                        Boolean                         @default(false)
   is_driver_approved                Boolean                         @default(false)
   driver_order_header               DriverOrderHeader?              @relation(fields: [order_id], references: [order_id], onUpdate: Cascade, onDelete: Cascade)

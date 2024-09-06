@@ -17,6 +17,24 @@ export class UpdateCustomerOrderHeaderDto extends PartialType(
   @IsBoolean()
   @IsOptional()
   @ApiProperty({
+    description: 'update the cancel_pulang field',
+    type: Boolean,
+    example: true,
+  })
+  cancel_pulang: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    description: 'update the cancel_pergi field',
+    type: Boolean,
+    example: true,
+  })
+  cancel_pergi: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
     description: 'update the driver approved status for customer order header',
     type: Boolean,
     example: true,
