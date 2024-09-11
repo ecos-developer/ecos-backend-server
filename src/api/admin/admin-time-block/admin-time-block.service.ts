@@ -22,14 +22,10 @@ export class AdminTimeBlockService {
       },
     });
 
-    return new HttpException(allTimeBlock, HttpStatus.CREATED);
+    return allTimeBlock;
   }
 
   async findById(id: string) {
-    if (id === null || id === undefined || id === '') {
-      throw new MethodNotAllowedException(`invalid id value ${id}!`);
-    }
-
     const currTimeBlock = await this.prisma.adminTimeBlock.findFirst({
       where: {
         time_block_id: id,
@@ -43,39 +39,30 @@ export class AdminTimeBlockService {
       },
     });
 
-    if (!currTimeBlock) {
-      throw new NotFoundException(`time block with id ${id} is not found!`);
-    }
-
-    return new HttpException(currTimeBlock, HttpStatus.CREATED);
+    return currTimeBlock;
   }
 
   async findByDriverId(user_id: string) {
-    if (user_id === null || user_id === undefined || user_id === '') {
-      throw new MethodNotAllowedException(`invalid user_id value ${user_id}!`);
-    }
-
     const currTimeBlock = await this.prisma.adminTimeBlock.findFirst({
+      where: {
+        driver_order_header: {
+          some: {
+            user: {
+              user_id,
+            },
+          },
+        },
+      },
       include: {
         driver_order_header: {
           include: {
-            user: {
-              where: {
-                user_id,
-              },
-            },
+            user: true,
           },
         },
       },
     });
 
-    if (!currTimeBlock) {
-      throw new NotFoundException(
-        `time block with id ${user_id} is not found!`,
-      );
-    }
-
-    return new HttpException(currTimeBlock, HttpStatus.CREATED);
+    return currTimeBlock;
   }
 
   async create(user: User, insertAdminTimeBlockDto: InsertAdminTimeBlockDto) {
@@ -165,5 +152,14 @@ export class AdminTimeBlockService {
     });
 
     return new HttpException(updateTimeBlock, HttpStatus.CREATED);
+  }
+
+  async deleteById(time_block_id: string) {
+    const deleteAdminTimeBlock = await this.prisma.adminTimeBlock.delete({
+      where: {
+        time_block_id,
+      },
+    });
+    return deleteAdminTimeBlock;
   }
 }

@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
+  MethodNotAllowedException,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -19,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
 import { Request } from 'express';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { InsertAdminTimeBlockDto } from './dto/insert-admin-time-block.dto';
 
 @ApiTags('AdminTimeBlock Table (token required)')
@@ -32,7 +35,8 @@ export class AdminTimeBlockController {
   @Get('')
   @ApiOperation({ summary: 'get all admin time block available' })
   async findAll() {
-    return await this.adminTimeBlockService.findAll();
+    const allTimeBlock = await this.adminTimeBlockService.findAll();
+    return new HttpException(allTimeBlock, HttpStatus.CREATED);
   }
 
   @Get(':id')
@@ -44,7 +48,13 @@ export class AdminTimeBlockController {
     example: '2c1390a4-0b50-48fb-8145-bd8a90558fc7',
   })
   async findById(@Param('id') id: string) {
-    return await this.adminTimeBlockService.findById(id);
+    const currTimeBlock = await this.adminTimeBlockService.findById(id);
+
+    if (!currTimeBlock) {
+      throw new NotFoundException(`time block with id ${id} is not found!`);
+    }
+
+    return new HttpException(currTimeBlock, HttpStatus.CREATED);
   }
 
   @Get('driver/:driver_id')
@@ -56,6 +66,11 @@ export class AdminTimeBlockController {
   })
   async findByDriverId(@Param('driver_id') id: string) {
     const findOrderWave = await this.adminTimeBlockService.findByDriverId(id);
+
+    if (!findOrderWave) {
+      throw new NotFoundException(`time block with id ${id} is not found!`);
+    }
+
     return new HttpException(findOrderWave, HttpStatus.OK);
   }
 
@@ -93,5 +108,25 @@ export class AdminTimeBlockController {
       id,
       insertAdminTimeBlockDto,
     );
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'delete admin time block by id (admin authorization)',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the admin time block',
+    type: 'string',
+    example: 'input here!',
+  })
+  async deleteById(@Req() req: Request, @Param('id') id: string) {
+    const currUser = req.user as User;
+    if (currUser.role !== Role.ADMIN) {
+      throw new MethodNotAllowedException(
+        `user ${currUser.email} is not admin!`,
+      );
+    }
+    return await this.adminTimeBlockService.deleteById(id);
   }
 }
