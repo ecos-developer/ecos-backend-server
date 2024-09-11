@@ -82,10 +82,19 @@ export class AdminTimeBlockController {
     @Req() req: Request,
     @Body() insertAdminTimeBlockDto: InsertAdminTimeBlockDto,
   ) {
-    return await this.adminTimeBlockService.create(
-      req.user as User,
+    const currUser = req.user as User;
+
+    if (currUser.role !== Role.ADMIN) {
+      throw new MethodNotAllowedException(
+        `user ${currUser.email} is not admin!`,
+      );
+    }
+
+    const newAdminTimeBlock = await this.adminTimeBlockService.create(
+      currUser.user_id,
       insertAdminTimeBlockDto,
     );
+    return new HttpException(newAdminTimeBlock, HttpStatus.CREATED);
   }
 
   @Patch(':id')
@@ -103,11 +112,23 @@ export class AdminTimeBlockController {
     @Param('id') id: string,
     @Body() insertAdminTimeBlockDto: InsertAdminTimeBlockDto,
   ) {
-    return await this.adminTimeBlockService.updateById(
-      req.user as User,
+    const currUser = req.user as User;
+
+    if (currUser.role !== Role.ADMIN) {
+      throw new MethodNotAllowedException(
+        `user ${currUser.email} is not admin!`,
+      );
+    }
+    const currTimeBlock = await this.adminTimeBlockService.findById(id);
+    if (!currTimeBlock) {
+      throw new NotFoundException(`time block with id ${id} is not found!`);
+    }
+
+    const updateTimeBlock = await this.adminTimeBlockService.updateById(
       id,
       insertAdminTimeBlockDto,
     );
+    return new HttpException(updateTimeBlock, HttpStatus.CREATED);
   }
 
   @Delete(':id')
@@ -127,6 +148,12 @@ export class AdminTimeBlockController {
         `user ${currUser.email} is not admin!`,
       );
     }
-    return await this.adminTimeBlockService.deleteById(id);
+
+    const currTimeBlock = await this.adminTimeBlockService.findById(id);
+    if (!currTimeBlock) {
+      throw new NotFoundException(`time block with id ${id} is not found!`);
+    }
+    const deleteTimeBlock = await this.adminTimeBlockService.deleteById(id);
+    return new HttpException(deleteTimeBlock, HttpStatus.CREATED);
   }
 }

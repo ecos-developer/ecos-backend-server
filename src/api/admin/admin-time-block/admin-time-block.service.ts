@@ -65,22 +65,13 @@ export class AdminTimeBlockService {
     return currTimeBlock;
   }
 
-  async create(user: User, insertAdminTimeBlockDto: InsertAdminTimeBlockDto) {
-    const currUser = await this.prisma.user.findFirst({
-      where: {
-        user_id: user.user_id,
-      },
-    });
-
-    if (currUser.role !== Role.ADMIN) {
-      throw new MethodNotAllowedException(
-        `user ${currUser.email} is not admin!`,
-      );
-    }
-
+  async create(
+    user_id: string,
+    insertAdminTimeBlockDto: InsertAdminTimeBlockDto,
+  ) {
     const newAdminTimeBlock = await this.prisma.user.update({
       where: {
-        user_id: currUser.user_id,
+        user_id,
       },
       data: {
         admin_time_block: {
@@ -93,47 +84,13 @@ export class AdminTimeBlockService {
         admin_time_block: true,
       },
     });
-    return new HttpException(newAdminTimeBlock, HttpStatus.CREATED);
+    return newAdminTimeBlock;
   }
 
   async updateById(
-    user: User,
     id: string,
     updateAdminTimeBlockDto: UpdateAdminTimeBlockDto,
   ) {
-    if (id === null || id === undefined || id === '') {
-      throw new MethodNotAllowedException(`invalid id value ${id}!`);
-    }
-
-    const currUser = await this.prisma.user.findFirst({
-      where: {
-        user_id: user.user_id,
-      },
-    });
-
-    if (currUser.role !== Role.ADMIN) {
-      throw new MethodNotAllowedException(
-        `user ${currUser.email} is not admin!`,
-      );
-    }
-
-    const currTimeBlock = await this.prisma.adminTimeBlock.findFirst({
-      where: {
-        time_block_id: id,
-      },
-      include: {
-        driver_order_header: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
-
-    if (!currTimeBlock) {
-      throw new NotFoundException(`time block with id ${id} is not found!`);
-    }
-
     const updateTimeBlock = await this.prisma.adminTimeBlock.update({
       where: {
         time_block_id: id,
@@ -151,7 +108,7 @@ export class AdminTimeBlockService {
       },
     });
 
-    return new HttpException(updateTimeBlock, HttpStatus.CREATED);
+    return updateTimeBlock;
   }
 
   async deleteById(time_block_id: string) {
