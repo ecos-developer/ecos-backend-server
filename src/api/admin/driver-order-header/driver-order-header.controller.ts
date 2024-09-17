@@ -10,6 +10,7 @@ import {
   HttpStatus,
   NotFoundException,
   MethodNotAllowedException,
+  Delete,
 } from '@nestjs/common';
 import { DriverOrderHeaderService } from './driver-order-header.service';
 import { CreateDriverOrderHeaderDto } from './dto/create-driver-order-header.dto';
@@ -21,8 +22,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt.guard';
-import { SseConfigService } from 'src/config/sse.config.service';
-import { FirebaseService } from 'src/firebase/firebase.service';
 
 @ApiTags('DriverOrderHeader Table (token required)')
 @Controller('driver-order-header')
@@ -114,5 +113,29 @@ export class DriverOrderHeaderController {
       );
     }
     return this.driverOrderHeaderService.update(id, updateDriverOrderHeaderDto);
+  }
+
+  @Delete(':order_id')
+  @ApiOperation({
+    summary: 'delete driver order by id',
+    description: `
+      - all of the field is optional
+      - meant for delete status order driver (will be handled by admin)
+    `,
+  })
+  @ApiParam({
+    name: 'order_id',
+    description: 'order_id of the driver order',
+    type: String,
+    example: 'get this id from GET DriverOrderHeader',
+  })
+  async delete(@Param('order_id') id: string) {
+    const findDriverById = await this.driverOrderHeaderService.findOne(id);
+    if (!findDriverById) {
+      throw new NotFoundException(
+        `driver order header with id ${id} is not found!`,
+      );
+    }
+    return this.driverOrderHeaderService.delete(id);
   }
 }

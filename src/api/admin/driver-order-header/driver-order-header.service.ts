@@ -166,10 +166,25 @@ export class DriverOrderHeaderService {
         ...updateDriverOrderHeaderDto,
       },
     });
+    await this.firebase.driverOrderHeaderForAdminRealtime(
+      this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
+    );
     await this.firebase.driverOrderHeaderEachRealtime(
       this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
       id,
     );
     return updateDriverOrderById;
+  }
+
+  async delete(order_id: string) {
+    const deleteDriverOrderById = await this.prisma.driverOrderHeader.delete({
+      where: {
+        order_id,
+      },
+    });
+    await this.firebase.driverOrderHeaderForAdminRealtime(
+      this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
+    );
+    return deleteDriverOrderById;
   }
 }
