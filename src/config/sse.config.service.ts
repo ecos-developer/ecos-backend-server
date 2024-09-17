@@ -10,4 +10,5 @@ export class SseConfigService {
   readonly CUSTOMERORDERHEADER_OBSERVABLE_STRING = 'customerorderheader-sse';
   readonly PAYMENTHEADER_OBSERVABLE_STRING = 'paymentheader-sse';
   readonly DAILYPICKUP_OBSERVABLE_STRING = 'dailypickup-sse';
+  readonly ADMINTIMEBLOCK_OBSERVABLE_STRING = 'admintimeblock-sse';
 }

@@ -1,18 +1,17 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  MethodNotAllowedException,
-  NotFoundException,
-} from '@nestjs/common';
-import { Role, User } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { InsertAdminTimeBlockDto } from './dto/insert-admin-time-block.dto';
 import { UpdateAdminTimeBlockDto } from './dto/update-admin-time-block.dto';
+import { SseConfigService } from 'src/config/sse.config.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Injectable()
 export class AdminTimeBlockService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sse: SseConfigService,
+    private readonly firebase: FirebaseService,
+  ) {}
 
   async findAll() {
     const allTimeBlock = await this.prisma.adminTimeBlock.findMany({
@@ -84,6 +83,9 @@ export class AdminTimeBlockService {
         admin_time_block: true,
       },
     });
+    await this.firebase.customerOrderHeaderForAdminRealtime(
+      this.sse.ADMINTIMEBLOCK_OBSERVABLE_STRING,
+    );
     return newAdminTimeBlock;
   }
 
@@ -107,7 +109,13 @@ export class AdminTimeBlockService {
         },
       },
     });
-
+    await this.firebase.customerOrderHeaderForAdminRealtime(
+      this.sse.ADMINTIMEBLOCK_OBSERVABLE_STRING,
+    );
+    await this.firebase.customerOrderHeaderEachRealtime(
+      this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
+      id,
+    );
     return updateTimeBlock;
   }
 
@@ -117,6 +125,13 @@ export class AdminTimeBlockService {
         time_block_id,
       },
     });
+    await this.firebase.customerOrderHeaderForAdminRealtime(
+      this.sse.ADMINTIMEBLOCK_OBSERVABLE_STRING,
+    );
+    await this.firebase.customerOrderHeaderEachRealtime(
+      this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
+      time_block_id,
+    );
     return deleteAdminTimeBlock;
   }
 }

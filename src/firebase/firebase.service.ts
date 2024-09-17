@@ -87,4 +87,18 @@ export class FirebaseService {
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);
   }
+
+  async adminTimeBlockForAdminRealtime(observable: string) {
+    const rtdbKey = `${observable}/new`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
+
+  async adminTimeBlockEachRealtime(observable: string, time_block_id: string) {
+    const rtdbKey = `${observable}/${time_block_id}`;
+    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
+    const value = checkStatus ? !checkStatus : true;
+    this.firebaseRepository.setData(rtdbKey, value);
+  }
 }
