@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNotEmpty, IsString } from 'class-validator';
+import { IsNumber, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class DriverVehicleDetailDto {
   @IsNotEmpty()
@@ -38,4 +38,28 @@ export class DriverVehicleDetailDto {
     description: 'vehicle number plate',
   })
   vehicle_number_plate: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    example: '2502036262',
+    description: 'child binusian id',
+  })
+  child_binusian_id: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    example: 'Johevin',
+    description: 'child name',
+  })
+  child_name: string;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    example: 5,
+    description: 'child grade',
+  })
+  child_grade: number;
 }
