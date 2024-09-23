@@ -56,9 +56,9 @@ export class DriverVehicleDetailDto {
   child_name: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsString()
   @ApiProperty({
-    example: 5,
+    example: '5',
     description: 'child grade',
   })
   child_grade: number;

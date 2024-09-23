@@ -73,7 +73,7 @@ model DriverDetail {
   vehicle_number_plate String
   child_name           String?
   child_binusian_id    String?
-  child_grade          Int?
+  child_grade          String?
   user                 User?    @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
   payment_id           String?  @unique
   payment              Payment? @relation(fields: [payment_id], references: [payment_id], onUpdate: Cascade, onDelete: Cascade)
