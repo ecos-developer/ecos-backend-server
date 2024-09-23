@@ -61,5 +61,5 @@ export class DriverVehicleDetailDto {
     example: '5',
     description: 'child grade',
   })
-  child_grade: number;
+  child_grade: string;
 }
