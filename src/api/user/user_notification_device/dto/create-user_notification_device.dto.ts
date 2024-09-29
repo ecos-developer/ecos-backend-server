@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateNotificationDto {
+export class CreateUserNotificationDeviceDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    example: 'get this from User table',
+    example: 'get this from client devices',
   })
-  user_id: string;
+  push_token: string;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    example: 'this is example notification message',
+    example: 'get this from users table',
   })
-  content: string;
+  user_id: string;
 }

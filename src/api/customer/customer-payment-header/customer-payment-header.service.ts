@@ -40,6 +40,26 @@ export class CustomerPaymentHeaderService {
       include: {
         customer_order_header: {
           include: {
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: true,
+                  },
+                },
+                customer_order_header: {
+                  include: {
+                    user: {
+                      include: {
+                        user_detail: true,
+                        customer_detail: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
             user: {
               include: {
                 user_detail: true,
@@ -61,6 +81,26 @@ export class CustomerPaymentHeaderService {
       include: {
         customer_order_header: {
           include: {
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: true,
+                  },
+                },
+                customer_order_header: {
+                  include: {
+                    user: {
+                      include: {
+                        user_detail: true,
+                        customer_detail: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
             user: {
               include: {
                 user_detail: true,
@@ -83,6 +123,26 @@ export class CustomerPaymentHeaderService {
         user_detail: true,
         customer_order_header: {
           include: {
+            driver_order_header: {
+              include: {
+                user: {
+                  include: {
+                    user_detail: true,
+                    driver_detail: true,
+                  },
+                },
+                customer_order_header: {
+                  include: {
+                    user: {
+                      include: {
+                        user_detail: true,
+                        customer_detail: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
             payment_header: true,
           },
         },

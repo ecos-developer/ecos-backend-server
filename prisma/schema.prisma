@@ -16,22 +16,30 @@ enum Role {
 
 // MODEL USER AND ITS DETAIL
 model User {
-  user_id               String                @id @default(uuid())
-  email                 String
-  password              String
-  otp                   String                @default("000")
-  role                  Role
-  user_detail           UserDetail?
-  driver_detail         DriverDetail?
-  customer_detail       CustomerDetail?
-  term                  Term?
-  customer_order_header CustomerOrderHeader[]
-  realtime_location     RealtimeLocation?
-  driver_order_header   DriverOrderHeader[]
-  chat_message          ChatMessage[]
-  admin_time_block      AdminTimeBlock[]
-  notification          Notification[]
-  created_at            DateTime              @default(now())
+  user_id                  String                    @id @default(uuid())
+  email                    String
+  password                 String
+  otp                      String                    @default("000")
+  role                     Role
+  user_detail              UserDetail?
+  driver_detail            DriverDetail?
+  customer_detail          CustomerDetail?
+  term                     Term?
+  customer_order_header    CustomerOrderHeader[]
+  realtime_location        RealtimeLocation?
+  driver_order_header      DriverOrderHeader[]
+  chat_message             ChatMessage[]
+  admin_time_block         AdminTimeBlock[]
+  notification             Notification[]
+  user_notification_device UserNotificationDevices[]
+  created_at               DateTime                  @default(now())
+}
+
+model UserNotificationDevices {
+  user_notification_device_id String @id @default(uuid())
+  user_id                     String
+  user                        User?  @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
+  push_token                  String
 }
 
 model Notification {

@@ -19,6 +19,7 @@ import { NotificationModule } from './api/notification/notification.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EmailModule } from './api/email/email.module';
 import { PrivacyModule } from './api/privacy/privacy.module';
+import { UserNotificationDeviceModule } from './api/user/user_notification_device/user_notification_device.module';
 
 @Module({
   imports: [
@@ -59,6 +60,8 @@ import { PrivacyModule } from './api/privacy/privacy.module';
     EmailModule,
 
     PrivacyModule,
+
+    UserNotificationDeviceModule,
   ],
 })
 export class AppModule {}
