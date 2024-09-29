@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateCustomerPaymentHeaderDto {
   @IsString()
@@ -22,4 +22,13 @@ export class CreateCustomerPaymentHeaderDto {
     example: 6000000,
   })
   payment_total: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({
+    example: 0,
+    type: Number,
+    description: 'extra passenger (example nany)',
+  })
+  distance_from_school: number;
 }

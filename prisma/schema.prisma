@@ -133,7 +133,6 @@ model CustomerOrderHeader {
   order_id                          String
   user_id                           String
   extra_passenger                   Int
-  distance_from_school              Int                             @default(0)
   cancel_pulang                     Boolean                         @default(false)
   cancel_pergi                      Boolean                         @default(false)
   is_ongoing                        Boolean                         @default(false)
@@ -179,6 +178,7 @@ model AdminTimeBlock {
 }
 
 model PaymentHeader {
+  distance_from_school  Int                  @default(0)
   customer_payment_id   String               @id @default(uuid())
   customer_order_id     String
   payment_proof_image   String?

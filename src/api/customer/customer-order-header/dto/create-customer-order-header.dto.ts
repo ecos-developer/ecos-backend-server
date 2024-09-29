@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateCustomerOrderHeaderDto {
   @IsString()
@@ -25,13 +25,4 @@ export class CreateCustomerOrderHeaderDto {
     description: 'extra passenger (example nany)',
   })
   extra_passenger: number;
-
-  @IsNumber()
-  @IsOptional()
-  @ApiProperty({
-    example: 0,
-    type: Number,
-    description: 'extra passenger (example nany)',
-  })
-  distance_from_school: number;
 }
