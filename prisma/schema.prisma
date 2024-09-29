@@ -133,6 +133,7 @@ model CustomerOrderHeader {
   order_id                          String
   user_id                           String
   extra_passenger                   Int
+  distance_from_school              Int                             @default(0)
   cancel_pulang                     Boolean                         @default(false)
   cancel_pergi                      Boolean                         @default(false)
   is_ongoing                        Boolean                         @default(false)

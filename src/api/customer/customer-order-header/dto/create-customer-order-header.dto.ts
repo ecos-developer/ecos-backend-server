@@ -25,4 +25,12 @@ export class CreateCustomerOrderHeaderDto {
     description: 'extra passenger (example nany)',
   })
   extra_passenger: number;
+
+  @IsNumber()
+  @ApiProperty({
+    example: 0,
+    type: Number,
+    description: 'extra passenger (example nany)',
+  })
+  distance_from_school: number;
 }
