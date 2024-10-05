@@ -10,6 +10,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ApproveUserByIdDto } from './dto/approve-user-by-id.dto';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { SseConfigService } from 'src/config/sse.config.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class AdminApprovalService {
@@ -17,6 +18,7 @@ export class AdminApprovalService {
     private readonly prisma: PrismaService,
     private readonly firebase: FirebaseService,
     private readonly sse: SseConfigService,
+    private readonly notification: NotificationService,
   ) {}
 
   async getAllUser(user: User) {
@@ -89,6 +91,13 @@ export class AdminApprovalService {
       this.sse.USERDETAIL_OBSERVABLE_STRING,
       approveUserByIdDto.id,
     );
+    const notificationData = {
+      title: 'User registration is approved!',
+      body: 'Hola new user, welcome to ECOS!',
+      user_id: approveUserByIdDto.id,
+    };
+    this.notification.handlePushNotification(notificationData);
+
     return new HttpException(updateUserDetail, HttpStatus.CREATED);
   }
 }

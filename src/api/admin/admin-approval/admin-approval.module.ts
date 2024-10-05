@@ -7,11 +7,16 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { FirebaseModule } from 'src/firebase/firebase.module';
 import { SseConfigService } from 'src/config/sse.config.service';
+import { NotificationController } from 'src/api/notification/notification.controller';
+import { NotificationService } from 'src/api/notification/notification.service';
+import { UserNotificationDeviceService } from 'src/api/user/user_notification_device/user_notification_device.service';
 
 @Module({
   imports: [PrismaModule, PassportModule, FirebaseModule],
-  controllers: [AdminApprovalController],
+  controllers: [AdminApprovalController, NotificationController],
   providers: [
+    NotificationService,
+    UserNotificationDeviceService,
     AdminApprovalService,
     JwtStrategy,
     FirebaseService,

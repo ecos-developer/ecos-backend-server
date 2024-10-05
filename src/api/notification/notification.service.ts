@@ -4,6 +4,9 @@ import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SseConfigService } from 'src/config/sse.config.service';
+import { PushNotificationDto } from './dto/push-notification.dto';
+import axios from 'axios';
+import { UserNotificationDeviceService } from '../user/user_notification_device/user_notification_device.service';
 
 @Injectable()
 export class NotificationService {
@@ -11,7 +14,29 @@ export class NotificationService {
     private readonly sse: SseConfigService,
     private readonly prisma: PrismaService,
     private readonly event: EventEmitter2,
+    private readonly notificationDevice: UserNotificationDeviceService,
   ) {}
+
+  async handlePushNotification(entity: PushNotificationDto) {
+    const notificationByUserId = await this.notificationDevice.findByUserId(
+      entity.user_id,
+    );
+    for (const notif of notificationByUserId) {
+      await this.create({
+        user_id: notif.user_id,
+        content: entity.body,
+      });
+
+      const contentData = {
+        to: notif.push_token,
+        sound: 'default',
+        title: entity.title,
+        body: entity.body,
+      };
+
+      await axios.post('https://exp.host/--/api/v2/push/send', contentData);
+    }
+  }
 
   async create(createNotificationDto: CreateNotificationDto) {
     const newNotif = await this.prisma.notification.create({
