@@ -45,7 +45,7 @@ export class DriverOrderHeaderService {
       body: `Please check new order from driver with name ${newDriverOrderHeader.user.user_detail.name}`,
       user_id: createDriverOrderHeaderDto.driver_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     // SUCCESS CREATE DRIVER ORDER NOTIF FOR DRIVER
     const driverNotifData = {
@@ -53,7 +53,7 @@ export class DriverOrderHeaderService {
       body: 'You have successfully create new order, cant wait to get your first passenger!',
       user_id: createDriverOrderHeaderDto.driver_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
 
     return newDriverOrderHeader;
   }
@@ -211,7 +211,7 @@ export class DriverOrderHeaderService {
       body: `Success update order for driver with name ${updateDriverOrderById.user.user_detail.name}`,
       user_id: updateDriverOrderById.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     // SUCCESS UPDATE DRIVER ORDER NOTIF FOR DRIVER
     const driverNotifData = {
@@ -219,7 +219,7 @@ export class DriverOrderHeaderService {
       body: 'Driver order data is successfully updated!',
       user_id: updateDriverOrderById.user.user_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
 
     return updateDriverOrderById;
   }
@@ -247,7 +247,7 @@ export class DriverOrderHeaderService {
       body: `Driver's order with name ${deleteDriverOrderById.user.user_detail.name} has been deleted!`,
       user_id: deleteDriverOrderById.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     // SUCCESS DELETE DRIVER ORDER NOTIF FOR DRIVER
     const driverNotifData = {
@@ -255,7 +255,7 @@ export class DriverOrderHeaderService {
       body: 'You order has been deleted by system',
       user_id: deleteDriverOrderById.user.user_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
 
     return deleteDriverOrderById;
   }

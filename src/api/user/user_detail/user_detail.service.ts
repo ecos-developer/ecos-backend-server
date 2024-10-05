@@ -63,7 +63,7 @@ export class UserDetailService {
       body: 'You have successfully updated your profile.',
       user_id: user.user_id,
     };
-    this.notification.handlePushNotification(notificationData);
+    await this.notification.handlePushNotification(notificationData);
 
     return updateUser;
   }

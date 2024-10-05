@@ -94,7 +94,7 @@ export class AdminTimeBlockService {
       body: `New admin time block is successfully created!`,
       user_id: user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     return newAdminTimeBlock;
   }
@@ -132,7 +132,7 @@ export class AdminTimeBlockService {
       body: `Admin time block is successfully updated!`,
       user_id: updateTimeBlock.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
     return updateTimeBlock;
   }
 
@@ -155,7 +155,7 @@ export class AdminTimeBlockService {
       body: `Admin time block is successfully deleted!`,
       user_id: deleteAdminTimeBlock.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     return deleteAdminTimeBlock;
   }

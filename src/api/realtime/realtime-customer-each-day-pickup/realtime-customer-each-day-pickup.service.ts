@@ -4,6 +4,7 @@ import { UpdateRealtimeCustomerEachDayPickupDto } from './dto/update-realtime-cu
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { SseConfigService } from 'src/config/sse.config.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class RealtimeCustomerEachDayPickupService {
@@ -11,6 +12,7 @@ export class RealtimeCustomerEachDayPickupService {
     private readonly prisma: PrismaService,
     private readonly firebase: FirebaseService,
     private readonly sse: SseConfigService,
+    private readonly notification: NotificationService,
   ) {}
 
   async create(
@@ -58,6 +60,20 @@ export class RealtimeCustomerEachDayPickupService {
       this.sse.DAILYPICKUP_OBSERVABLE_STRING,
       newPickup.customer_order_header.driver_order_header.user.user_id,
     );
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Success create new daily journey',
+      body: `Daily journey has successfully created for user name ${newPickup.customer_order_header.user.user_detail.name}!`,
+      user_id: newPickup.customer_order_header.driver_order_header.user.user_id,
+    };
+    await this.notification.handlePushNotification(driverNotifData);
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
+    const customerNotifData = {
+      title: 'Your daily journey today has started',
+      body: 'Get prepare because driver are on the way!',
+      user_id: newPickup.customer_order_header.user_id,
+    };
+    await this.notification.handlePushNotification(customerNotifData);
     return newPickup;
   }
 
@@ -220,6 +236,22 @@ export class RealtimeCustomerEachDayPickupService {
       this.sse.DAILYPICKUP_OBSERVABLE_STRING,
       updatePickup.customer_order_header.driver_order_header.user.user_id,
     );
+
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Daily journey has been updated!',
+      body: `Daily journey has updated for user name ${updatePickup.customer_order_header.user.user_detail.name}!`,
+      user_id:
+        updatePickup.customer_order_header.driver_order_header.user.user_id,
+    };
+    await this.notification.handlePushNotification(driverNotifData);
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
+    const customerNotifData = {
+      title: 'Your daily journey today has updated by driver',
+      body: 'Check your latest daily journey status',
+      user_id: updatePickup.customer_order_header.user_id,
+    };
+    await this.notification.handlePushNotification(customerNotifData);
     return updatePickup;
   }
 

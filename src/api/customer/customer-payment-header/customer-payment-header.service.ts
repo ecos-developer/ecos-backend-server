@@ -61,7 +61,7 @@ export class CustomerPaymentHeaderService {
         newPaymentHeader.customer_order_header.driver_order_header
           .admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
     // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR DRIVER
     const driverNotifData = {
       title: 'Success create new payment',
@@ -69,14 +69,14 @@ export class CustomerPaymentHeaderService {
       user_id:
         newPaymentHeader.customer_order_header.driver_order_header.user.user_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
     // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR USER
     const customerNotifData = {
       title: 'Success create new payment',
       body: 'You have successfully create new payment, wait for admin approval!',
       user_id: newPaymentHeader.customer_order_header.user_id,
     };
-    this.notification.handlePushNotification(customerNotifData);
+    await this.notification.handlePushNotification(customerNotifData);
 
     return newPaymentHeader;
   }
@@ -246,7 +246,7 @@ export class CustomerPaymentHeaderService {
         updatePaymentHeader.customer_order_header.driver_order_header
           .admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
     // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
     const driverNotifData = {
       title: 'Success update payment',
@@ -255,14 +255,14 @@ export class CustomerPaymentHeaderService {
         updatePaymentHeader.customer_order_header.driver_order_header.user
           .user_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
     // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
     const customerNotifData = {
       title: 'Success update payment',
       body: 'Your payment has been updated!',
       user_id: updatePaymentHeader.customer_order_header.user_id,
     };
-    this.notification.handlePushNotification(customerNotifData);
+    await this.notification.handlePushNotification(customerNotifData);
 
     return updatePaymentHeader;
   }

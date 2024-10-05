@@ -8,6 +8,8 @@ import { SseConfigService } from 'src/config/sse.config.service';
 import { RoomChatService } from '../room-chat/room-chat.service';
 import { FirebaseModule } from 'src/firebase/firebase.module';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { NotificationService } from 'src/api/notification/notification.service';
+import { UserNotificationDeviceService } from 'src/api/user/user_notification_device/user_notification_device.service';
 
 @Module({
   imports: [PrismaModule, PassportModule, FirebaseModule],
@@ -18,6 +20,8 @@ import { FirebaseService } from 'src/firebase/firebase.service';
     SseConfigService,
     RoomChatService,
     FirebaseService,
+    NotificationService,
+    UserNotificationDeviceService,
   ],
 })
 export class ChatMessageModule {}

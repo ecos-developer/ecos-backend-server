@@ -5,6 +5,7 @@ import { FirebaseRepository } from './firebase.repository';
 export class FirebaseService {
   constructor(private firebaseRepository: FirebaseRepository) {}
 
+  // DONE NOTIF
   async chatMessageRealtime(observable: string, order_id: string) {
     const rtdbKey = `${observable}/${order_id}`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
@@ -71,6 +72,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async dailyCustomerPickupForAdminRealtime(observable: string) {
     const rtdbKey = `${observable}/new`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
@@ -78,6 +80,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async dailyCustomerPickupEachRealtime(observable: string, pickup_id: string) {
     const rtdbKey = `${observable}/${pickup_id}`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
@@ -85,25 +88,12 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async dailyCustomerPickupByDriverIdRealtime(
     observable: string,
     driver_id: string,
   ) {
     const rtdbKey = `${observable}/driver/  ${driver_id}`;
-    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
-    const value = checkStatus ? !checkStatus : true;
-    this.firebaseRepository.setData(rtdbKey, value);
-  }
-
-  async adminTimeBlockForAdminRealtime(observable: string) {
-    const rtdbKey = `${observable}/new`;
-    const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
-    const value = checkStatus ? !checkStatus : true;
-    this.firebaseRepository.setData(rtdbKey, value);
-  }
-
-  async adminTimeBlockEachRealtime(observable: string, time_block_id: string) {
-    const rtdbKey = `${observable}/${time_block_id}`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
     const value = checkStatus ? !checkStatus : true;
     this.firebaseRepository.setData(rtdbKey, value);

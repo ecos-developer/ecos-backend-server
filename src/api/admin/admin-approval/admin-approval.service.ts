@@ -100,7 +100,7 @@ export class AdminApprovalService {
         : 'Your account has been disabled. Please contact support for more information.',
       user_id: approveUserByIdDto.id,
     };
-    this.notification.handlePushNotification(notificationData);
+    await this.notification.handlePushNotification(notificationData);
 
     return new HttpException(updateUserDetail, HttpStatus.CREATED);
   }

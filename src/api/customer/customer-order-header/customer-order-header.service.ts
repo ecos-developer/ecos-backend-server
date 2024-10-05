@@ -52,7 +52,7 @@ export class CustomerOrderHeaderService {
       body: `New customer is successfully created from customer name ${newCustomerOrder.user.user_detail.name}`,
       user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR CUSTOMER
     const customerNotifData = {
@@ -60,7 +60,7 @@ export class CustomerOrderHeaderService {
       body: `Successfully created new order for driver named ${newCustomerOrder.driver_order_header.user.user_detail.name}!`,
       user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(customerNotifData);
+    await this.notification.handlePushNotification(customerNotifData);
 
     // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR DRIVER
     const driverNotifData = {
@@ -68,7 +68,7 @@ export class CustomerOrderHeaderService {
       body: `New order request from customer name ${newCustomerOrder.user.user_detail.name}!`,
       user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
 
     return newCustomerOrder;
   }
@@ -198,7 +198,7 @@ export class CustomerOrderHeaderService {
       user_id:
         updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(adminNotifData);
+    await this.notification.handlePushNotification(adminNotifData);
 
     // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR CUSTOMER
     const customerNotifData = {
@@ -207,7 +207,7 @@ export class CustomerOrderHeaderService {
       user_id:
         updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(customerNotifData);
+    await this.notification.handlePushNotification(customerNotifData);
 
     // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR DRIVER
     const driverNotifData = {
@@ -216,7 +216,7 @@ export class CustomerOrderHeaderService {
       user_id:
         updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
     };
-    this.notification.handlePushNotification(driverNotifData);
+    await this.notification.handlePushNotification(driverNotifData);
 
     return updateCustomerOrderHeader;
   }
