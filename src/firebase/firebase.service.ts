@@ -36,6 +36,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async customerOrderHeaderForAdminRealtime(observable: string) {
     const rtdbKey = `${observable}/new`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
@@ -43,6 +44,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async customerOrderHeaderEachRealtime(
     observable: string,
     customer_order_id: string,
@@ -53,6 +55,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async paymentForAdminRealtime(observable: string) {
     const rtdbKey = `${observable}/new`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
@@ -60,6 +63,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async paymentEachRealtime(observable: string, customer_payment_id: string) {
     const rtdbKey = `${observable}/${customer_payment_id}`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);

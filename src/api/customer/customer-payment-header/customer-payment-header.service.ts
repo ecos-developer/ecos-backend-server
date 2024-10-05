@@ -4,6 +4,7 @@ import { UpdateCustomerPaymentHeaderDto } from './dto/update-customer-payment-he
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class CustomerPaymentHeaderService {
@@ -11,6 +12,7 @@ export class CustomerPaymentHeaderService {
     private readonly prisma: PrismaService,
     private readonly sse: SseConfigService,
     private readonly firebase: FirebaseService,
+    private readonly notification: NotificationService,
   ) {}
 
   async create(createCustomerPaymentHeaderDto: CreateCustomerPaymentHeaderDto) {
@@ -21,6 +23,27 @@ export class CustomerPaymentHeaderService {
         is_admin_approved: false,
         expired_at,
       },
+      include: {
+        customer_order_header: {
+          include: {
+            driver_order_header: {
+              include: {
+                user: true,
+                admin_time_block: {
+                  include: {
+                    user: true,
+                  },
+                },
+              },
+            },
+            user: {
+              include: {
+                user_detail: true,
+              },
+            },
+          },
+        },
+      },
     });
     await this.firebase.paymentForAdminRealtime(
       this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
@@ -29,6 +52,32 @@ export class CustomerPaymentHeaderService {
       this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
       newPaymentHeader.customer_payment_id,
     );
+
+    // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Success create new payment',
+      body: 'New payment has successfully created, its waiting for your approval!',
+      user_id:
+        newPaymentHeader.customer_order_header.driver_order_header
+          .admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+    // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Success create new payment',
+      body: `New payment has successfully created for user name ${newPaymentHeader.customer_order_header.user.user_detail.name}, wait for admin approval!`,
+      user_id:
+        newPaymentHeader.customer_order_header.driver_order_header.user.user_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+    // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR USER
+    const customerNotifData = {
+      title: 'Success create new payment',
+      body: 'You have successfully create new payment, wait for admin approval!',
+      user_id: newPaymentHeader.customer_order_header.user_id,
+    };
+    this.notification.handlePushNotification(customerNotifData);
+
     return newPaymentHeader;
   }
 
@@ -162,11 +211,59 @@ export class CustomerPaymentHeaderService {
       data: {
         ...updateCustomerPaymentHeaderDto,
       },
+      include: {
+        customer_order_header: {
+          include: {
+            driver_order_header: {
+              include: {
+                user: true,
+                admin_time_block: {
+                  include: {
+                    user: true,
+                  },
+                },
+              },
+            },
+            user: {
+              include: {
+                user_detail: true,
+              },
+            },
+          },
+        },
+      },
     });
     await this.firebase.paymentEachRealtime(
       this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
       customer_payment_id,
     );
+
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Success update payment',
+      body: 'Payment has successfully updated!',
+      user_id:
+        updatePaymentHeader.customer_order_header.driver_order_header
+          .admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Success update payment',
+      body: `Payment has successfully updated for user name ${updatePaymentHeader.customer_order_header.user.user_detail.name}!`,
+      user_id:
+        updatePaymentHeader.customer_order_header.driver_order_header.user
+          .user_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
+    const customerNotifData = {
+      title: 'Success update payment',
+      body: 'Your payment has been updated!',
+      user_id: updatePaymentHeader.customer_order_header.user_id,
+    };
+    this.notification.handlePushNotification(customerNotifData);
+
     return updatePaymentHeader;
   }
 }
