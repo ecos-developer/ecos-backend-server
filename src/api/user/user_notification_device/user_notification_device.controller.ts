@@ -37,6 +37,16 @@ export class UserNotificationDeviceController {
         `User with user_id ${createUserNotificationDeviceDto.user_id} is not found!`,
       );
     }
+    const findByUserAndToken =
+      await this.userNotificationDeviceService.findByIdAndPushToken(
+        createUserNotificationDeviceDto.user_id,
+        createUserNotificationDeviceDto.push_token,
+      );
+    if (findByUserAndToken) {
+      throw new MethodNotAllowedException(
+        `user_id ${createUserNotificationDeviceDto.user_id} and token ${createUserNotificationDeviceDto.push_token} is already registered!`,
+      );
+    }
 
     const newUserNotificationDevice =
       await this.userNotificationDeviceService.create(
