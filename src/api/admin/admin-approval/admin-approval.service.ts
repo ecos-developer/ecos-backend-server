@@ -92,8 +92,12 @@ export class AdminApprovalService {
       approveUserByIdDto.id,
     );
     const notificationData = {
-      title: 'User registration is approved!',
-      body: 'Hola new user, welcome to ECOS!',
+      title: updateUserDetail.is_admin_approved
+        ? 'User registration is approved!'
+        : 'Account has been disabled!',
+      body: updateUserDetail.is_admin_approved
+        ? 'Hola new user, welcome to ECOS!'
+        : 'Your account has been disabled. Please contact support for more information.',
       user_id: approveUserByIdDto.id,
     };
     this.notification.handlePushNotification(notificationData);

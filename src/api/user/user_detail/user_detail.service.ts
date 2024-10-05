@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { SseConfigService } from 'src/config/sse.config.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class UserDetailService {
@@ -11,6 +12,7 @@ export class UserDetailService {
     private readonly prisma: PrismaService,
     private readonly sse: SseConfigService,
     private readonly firebase: FirebaseService,
+    private readonly notification: NotificationService,
   ) {}
 
   async findOne(user: User) {
@@ -56,6 +58,13 @@ export class UserDetailService {
       this.sse.USERDETAIL_OBSERVABLE_STRING,
       user.user_id,
     );
+    const notificationData = {
+      title: 'Profile Update Successful!',
+      body: 'You have successfully updated your profile.',
+      user_id: user.user_id,
+    };
+    this.notification.handlePushNotification(notificationData);
+
     return updateUser;
   }
 }

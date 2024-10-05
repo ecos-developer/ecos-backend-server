@@ -4,6 +4,7 @@ import { UpdateDriverOrderHeaderDto } from './dto/update-driver-order-header.dto
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class DriverOrderHeaderService {
@@ -11,6 +12,7 @@ export class DriverOrderHeaderService {
     private readonly prisma: PrismaService,
     private readonly sse: SseConfigService,
     private readonly firebase: FirebaseService,
+    private readonly notification: NotificationService,
   ) {}
 
   async create(createDriverOrderHeaderDto: CreateDriverOrderHeaderDto) {
@@ -21,6 +23,13 @@ export class DriverOrderHeaderService {
         is_admin_approved: false,
         is_ongoing: false,
       },
+      include: {
+        user: {
+          include: {
+            user_detail: true,
+          },
+        },
+      },
     });
     await this.firebase.driverOrderHeaderForAdminRealtime(
       this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
@@ -29,6 +38,23 @@ export class DriverOrderHeaderService {
       this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
       newDriverOrderHeader.order_id,
     );
+
+    // SUCCESS CREATE DRIVER ORDER NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'New order from driver',
+      body: `Please check new order from driver with name ${newDriverOrderHeader.user.user_detail.name}`,
+      user_id: createDriverOrderHeaderDto.driver_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
+    // SUCCESS CREATE DRIVER ORDER NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Success create new order',
+      body: 'You have successfully create new order, cant wait to get your first passenger!',
+      user_id: createDriverOrderHeaderDto.driver_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+
     return newDriverOrderHeader;
   }
 
@@ -156,6 +182,11 @@ export class DriverOrderHeaderService {
         order_id: id,
       },
       include: {
+        admin_time_block: {
+          include: {
+            user: true,
+          },
+        },
         user: {
           include: {
             user_detail: true,
@@ -173,6 +204,23 @@ export class DriverOrderHeaderService {
       this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
       id,
     );
+
+    // SUCCESS UPDATE DRIVER ORDER NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Update driver order successfull',
+      body: `Success update order for driver with name ${updateDriverOrderById.user.user_detail.name}`,
+      user_id: updateDriverOrderById.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
+    // SUCCESS CREATE DRIVER ORDER NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Success update driver order',
+      body: 'Driver order data is successfully updated!',
+      user_id: updateDriverOrderById.user.user_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+
     return updateDriverOrderById;
   }
 

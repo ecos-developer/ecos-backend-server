@@ -12,6 +12,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async userDetailRealtime(observable: string, user_id: string) {
     const rtdbKey = `${observable}/${user_id}`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
@@ -19,6 +20,7 @@ export class FirebaseService {
     this.firebaseRepository.setData(rtdbKey, value);
   }
 
+  // DONE NOTIF
   async driverOrderHeaderForAdminRealtime(observable: string) {
     const rtdbKey = `${observable}/new`;
     const checkStatus: boolean = await this.firebaseRepository.getData(rtdbKey);
