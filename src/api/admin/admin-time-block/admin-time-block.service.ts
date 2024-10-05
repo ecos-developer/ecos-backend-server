@@ -4,6 +4,7 @@ import { InsertAdminTimeBlockDto } from './dto/insert-admin-time-block.dto';
 import { UpdateAdminTimeBlockDto } from './dto/update-admin-time-block.dto';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class AdminTimeBlockService {
@@ -11,6 +12,7 @@ export class AdminTimeBlockService {
     private readonly prisma: PrismaService,
     private readonly sse: SseConfigService,
     private readonly firebase: FirebaseService,
+    private readonly notification: NotificationService,
   ) {}
 
   async findAll() {
@@ -86,6 +88,14 @@ export class AdminTimeBlockService {
     await this.firebase.customerOrderHeaderForAdminRealtime(
       this.sse.ADMINTIMEBLOCK_OBSERVABLE_STRING,
     );
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'New admin time block has been created',
+      body: `New admin time block is successfully created!`,
+      user_id: user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
     return newAdminTimeBlock;
   }
 
@@ -116,6 +126,13 @@ export class AdminTimeBlockService {
       this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
       id,
     );
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Admin time block has been updated',
+      body: `Admin time block is successfully updated!`,
+      user_id: updateTimeBlock.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
     return updateTimeBlock;
   }
 
@@ -132,6 +149,14 @@ export class AdminTimeBlockService {
       this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
       time_block_id,
     );
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Admin time block has been deleted',
+      body: `Admin time block is successfully deleted!`,
+      user_id: deleteAdminTimeBlock.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
     return deleteAdminTimeBlock;
   }
 }

@@ -4,6 +4,7 @@ import { UpdateCustomerOrderHeaderDto } from './dto/update-customer-order-header
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SseConfigService } from 'src/config/sse.config.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
+import { NotificationService } from 'src/api/notification/notification.service';
 
 @Injectable()
 export class CustomerOrderHeaderService {
@@ -11,6 +12,7 @@ export class CustomerOrderHeaderService {
     private readonly prisma: PrismaService,
     private readonly sse: SseConfigService,
     private readonly firebase: FirebaseService,
+    private readonly notification: NotificationService,
   ) {}
   async create(createCustomerOrderHeaderDto: CreateCustomerOrderHeaderDto) {
     const newCustomerOrder = await this.prisma.customerOrderHeader.create({
@@ -18,10 +20,19 @@ export class CustomerOrderHeaderService {
         ...createCustomerOrderHeaderDto,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            user_detail: true,
+          },
+        },
         payment_header: true,
         driver_order_header: {
           include: {
+            user: {
+              include: {
+                user_detail: true,
+              },
+            },
             admin_time_block: true,
           },
         },
@@ -35,6 +46,30 @@ export class CustomerOrderHeaderService {
       this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
       newCustomerOrder.customer_order_id,
     );
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'New customer order has been created',
+      body: `New customer is successfully created from customer name ${newCustomerOrder.user.user_detail.name}`,
+      user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR CUSTOMER
+    const customerNotifData = {
+      title: 'Your order has been created',
+      body: `Successfully created new order for driver named ${newCustomerOrder.driver_order_header.user.user_detail.name}!`,
+      user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(customerNotifData);
+
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'New order request',
+      body: `New order request from customer name ${newCustomerOrder.user.user_detail.name}!`,
+      user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+
     return newCustomerOrder;
   }
 
@@ -131,10 +166,19 @@ export class CustomerOrderHeaderService {
           ...updateCustomerOrderHeaderDto,
         },
         include: {
-          user: true,
+          user: {
+            include: {
+              user_detail: true,
+            },
+          },
           payment_header: true,
           driver_order_header: {
             include: {
+              user: {
+                include: {
+                  user_detail: true,
+                },
+              },
               admin_time_block: true,
             },
           },
@@ -146,6 +190,34 @@ export class CustomerOrderHeaderService {
       this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
       id,
     );
+
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Customer order has been updated',
+      body: `Customer is successfully updated from customer name ${updateCustomerOrderHeader.user.user_detail.name}`,
+      user_id:
+        updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR CUSTOMER
+    const customerNotifData = {
+      title: 'Your order has been updated',
+      body: `Successfully update order for driver named ${updateCustomerOrderHeader.driver_order_header.user.user_detail.name}!`,
+      user_id:
+        updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(customerNotifData);
+
+    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Order request has been updated',
+      body: `Order request has been updated for customer name ${updateCustomerOrderHeader.user.user_detail.name}!`,
+      user_id:
+        updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+
     return updateCustomerOrderHeader;
   }
 
