@@ -213,7 +213,7 @@ export class DriverOrderHeaderService {
     };
     this.notification.handlePushNotification(adminNotifData);
 
-    // SUCCESS CREATE DRIVER ORDER NOTIF FOR DRIVER
+    // SUCCESS UPDATE DRIVER ORDER NOTIF FOR DRIVER
     const driverNotifData = {
       title: 'Success update driver order',
       body: 'Driver order data is successfully updated!',
@@ -229,10 +229,34 @@ export class DriverOrderHeaderService {
       where: {
         order_id,
       },
+      include: {
+        admin_time_block: true,
+        user: {
+          include: {
+            user_detail: true,
+          },
+        },
+      },
     });
     await this.firebase.driverOrderHeaderForAdminRealtime(
       this.sse.DRIVERORDERHEADER_OBSERVABLE_STRING,
     );
+    // SUCCESS DELETE DRIVER ORDER NOTIF FOR ADMIN
+    const adminNotifData = {
+      title: 'Driver order has been deleted',
+      body: `Driver's order with name ${deleteDriverOrderById.user.user_detail.name} has been deleted!`,
+      user_id: deleteDriverOrderById.admin_time_block.user_id,
+    };
+    this.notification.handlePushNotification(adminNotifData);
+
+    // SUCCESS DELETE DRIVER ORDER NOTIF FOR DRIVER
+    const driverNotifData = {
+      title: 'Your order has been deleted',
+      body: 'You order has been deleted by system',
+      user_id: deleteDriverOrderById.user.user_id,
+    };
+    this.notification.handlePushNotification(driverNotifData);
+
     return deleteDriverOrderById;
   }
 }
