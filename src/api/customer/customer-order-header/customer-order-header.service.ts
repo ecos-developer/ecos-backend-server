@@ -58,7 +58,7 @@ export class CustomerOrderHeaderService {
     const customerNotifData = {
       title: 'Your order has been created',
       body: `Successfully created new order for driver named ${newCustomerOrder.driver_order_header.user.user_detail.name}!`,
-      user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
+      user_id: newCustomerOrder.user_id,
     };
     await this.notification.handlePushNotification(customerNotifData);
 
@@ -66,7 +66,7 @@ export class CustomerOrderHeaderService {
     const driverNotifData = {
       title: 'New order request',
       body: `New order request from customer name ${newCustomerOrder.user.user_detail.name}!`,
-      user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
+      user_id: newCustomerOrder.driver_order_header.user.user_id,
     };
     await this.notification.handlePushNotification(driverNotifData);
 
@@ -204,8 +204,7 @@ export class CustomerOrderHeaderService {
     const customerNotifData = {
       title: 'Your order has been updated',
       body: `Successfully update order for driver named ${updateCustomerOrderHeader.driver_order_header.user.user_detail.name}!`,
-      user_id:
-        updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
+      user_id: updateCustomerOrderHeader.user_id,
     };
     await this.notification.handlePushNotification(customerNotifData);
 
@@ -213,8 +212,7 @@ export class CustomerOrderHeaderService {
     const driverNotifData = {
       title: 'Order request has been updated',
       body: `Order request has been updated for customer name ${updateCustomerOrderHeader.user.user_detail.name}!`,
-      user_id:
-        updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
+      user_id: updateCustomerOrderHeader.driver_order_header.user.user_id,
     };
     await this.notification.handlePushNotification(driverNotifData);
 
