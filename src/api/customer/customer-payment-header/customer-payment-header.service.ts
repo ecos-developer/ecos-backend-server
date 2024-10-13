@@ -55,8 +55,8 @@ export class CustomerPaymentHeaderService {
 
     // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR ADMIN
     const adminNotifData = {
-      title: 'Success create new payment',
-      body: 'New payment has successfully created, its waiting for your approval!',
+      title: 'New payment is waiting for approval',
+      body: `New payment from user named ${newPaymentHeader.customer_order_header.user.user_detail.name} is waiting for your approval!`,
       user_id:
         newPaymentHeader.customer_order_header.driver_order_header
           .admin_time_block.user_id,
@@ -72,8 +72,8 @@ export class CustomerPaymentHeaderService {
     await this.notification.handlePushNotification(driverNotifData);
     // SUCCESS CREATE CUSTOMER PAYMENT NOTIF FOR USER
     const customerNotifData = {
-      title: 'Success create new payment',
-      body: 'You have successfully create new payment, wait for admin approval!',
+      title: 'Driver has approved your order',
+      body: 'Now you can pay the trip fee',
       user_id: newPaymentHeader.customer_order_header.user_id,
     };
     await this.notification.handlePushNotification(customerNotifData);
@@ -238,19 +238,10 @@ export class CustomerPaymentHeaderService {
       customer_payment_id,
     );
 
-    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR ADMIN
-    const adminNotifData = {
-      title: 'Success update payment',
-      body: 'Payment has successfully updated!',
-      user_id:
-        updatePaymentHeader.customer_order_header.driver_order_header
-          .admin_time_block.user_id,
-    };
-    await this.notification.handlePushNotification(adminNotifData);
     // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
     const driverNotifData = {
-      title: 'Success update payment',
-      body: `Payment has successfully updated for user name ${updatePaymentHeader.customer_order_header.user.user_detail.name}!`,
+      title: 'Customer has paid the trip fee',
+      body: `Customer with name ${updatePaymentHeader.customer_order_header.user.user_detail.name} has paid the trip fee!`,
       user_id:
         updatePaymentHeader.customer_order_header.driver_order_header.user
           .user_id,
@@ -258,7 +249,7 @@ export class CustomerPaymentHeaderService {
     await this.notification.handlePushNotification(driverNotifData);
     // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
     const customerNotifData = {
-      title: 'Success update payment',
+      title: 'Your payment had been approved',
       body: 'Your payment has been updated!',
       user_id: updatePaymentHeader.customer_order_header.user_id,
     };
