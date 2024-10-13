@@ -24,6 +24,11 @@ export class DriverOrderHeaderService {
         is_ongoing: false,
       },
       include: {
+        admin_time_block: {
+          include: {
+            user: true,
+          },
+        },
         user: {
           include: {
             user_detail: true,
@@ -43,7 +48,7 @@ export class DriverOrderHeaderService {
     const adminNotifData = {
       title: 'New wave registration from driver',
       body: `Please check new wave registration from driver with name ${newDriverOrderHeader.user.user_detail.name}`,
-      user_id: createDriverOrderHeaderDto.driver_id,
+      user_id: newDriverOrderHeader.admin_time_block.user_id,
     };
     await this.notification.handlePushNotification(adminNotifData);
 
