@@ -46,25 +46,18 @@ export class CustomerOrderHeaderService {
       this.sse.CUSTOMERORDERHEADER_OBSERVABLE_STRING,
       newCustomerOrder.customer_order_id,
     );
-    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
-    const adminNotifData = {
-      title: 'New customer order has been created',
-      body: `New customer is successfully created from customer name ${newCustomerOrder.user.user_detail.name}`,
-      user_id: newCustomerOrder.driver_order_header.admin_time_block.user_id,
-    };
-    await this.notification.handlePushNotification(adminNotifData);
 
-    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR CUSTOMER
+    // SUCCESS CREATE CUSTOMER ORDER HEADER NOTIF FOR CUSTOMER
     const customerNotifData = {
-      title: 'Your order has been created',
+      title: 'Your order request has been sent',
       body: `Successfully created new order for driver named ${newCustomerOrder.driver_order_header.user.user_detail.name}!`,
       user_id: newCustomerOrder.user_id,
     };
     await this.notification.handlePushNotification(customerNotifData);
 
-    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR DRIVER
+    // SUCCESS CREATE CUSTOMER ORDER HEADER NOTIF FOR DRIVER
     const driverNotifData = {
-      title: 'New order request',
+      title: 'You has new order from customer',
       body: `New order request from customer name ${newCustomerOrder.user.user_detail.name}!`,
       user_id: newCustomerOrder.driver_order_header.user.user_id,
     };
@@ -191,30 +184,13 @@ export class CustomerOrderHeaderService {
       id,
     );
 
-    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR ADMIN
-    const adminNotifData = {
-      title: 'Customer order has been updated',
-      body: `Customer is successfully updated from customer name ${updateCustomerOrderHeader.user.user_detail.name}`,
-      user_id:
-        updateCustomerOrderHeader.driver_order_header.admin_time_block.user_id,
-    };
-    await this.notification.handlePushNotification(adminNotifData);
-
-    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR CUSTOMER
+    // SUCCESS UPDATE CUSTOMER ORDER HEADER NOTIF FOR CUSTOMER
     const customerNotifData = {
-      title: 'Your order has been updated',
+      title: 'Your order has been approved',
       body: `Successfully update order for driver named ${updateCustomerOrderHeader.driver_order_header.user.user_detail.name}!`,
       user_id: updateCustomerOrderHeader.user_id,
     };
     await this.notification.handlePushNotification(customerNotifData);
-
-    // SUCCESS CREATE ADMIN TIME BLOCK NOTIF FOR DRIVER
-    const driverNotifData = {
-      title: 'Order request has been updated',
-      body: `Order request has been updated for customer name ${updateCustomerOrderHeader.user.user_detail.name}!`,
-      user_id: updateCustomerOrderHeader.driver_order_header.user.user_id,
-    };
-    await this.notification.handlePushNotification(driverNotifData);
 
     return updateCustomerOrderHeader;
   }

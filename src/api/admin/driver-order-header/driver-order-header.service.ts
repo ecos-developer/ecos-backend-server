@@ -41,8 +41,8 @@ export class DriverOrderHeaderService {
 
     // SUCCESS CREATE DRIVER ORDER NOTIF FOR ADMIN
     const adminNotifData = {
-      title: 'New order from driver',
-      body: `Please check new order from driver with name ${newDriverOrderHeader.user.user_detail.name}`,
+      title: 'New wave registration from driver',
+      body: `Please check new wave registration from driver with name ${newDriverOrderHeader.user.user_detail.name}`,
       user_id: createDriverOrderHeaderDto.driver_id,
     };
     await this.notification.handlePushNotification(adminNotifData);
@@ -205,18 +205,10 @@ export class DriverOrderHeaderService {
       id,
     );
 
-    // SUCCESS UPDATE DRIVER ORDER NOTIF FOR ADMIN
-    const adminNotifData = {
-      title: 'Update driver order successfull',
-      body: `Success update order for driver with name ${updateDriverOrderById.user.user_detail.name}`,
-      user_id: updateDriverOrderById.admin_time_block.user_id,
-    };
-    await this.notification.handlePushNotification(adminNotifData);
-
     // SUCCESS UPDATE DRIVER ORDER NOTIF FOR DRIVER
     const driverNotifData = {
-      title: 'Success update driver order',
-      body: 'Driver order data is successfully updated!',
+      title: 'Your wave registration is approved',
+      body: 'Congrats, now you are ready to pickups passengers!',
       user_id: updateDriverOrderById.user.user_id,
     };
     await this.notification.handlePushNotification(driverNotifData);
@@ -243,16 +235,16 @@ export class DriverOrderHeaderService {
     );
     // SUCCESS DELETE DRIVER ORDER NOTIF FOR ADMIN
     const adminNotifData = {
-      title: 'Driver order has been deleted',
-      body: `Driver's order with name ${deleteDriverOrderById.user.user_detail.name} has been deleted!`,
+      title: 'Driver wave registration has been deleted',
+      body: `Driver's wave registration with name ${deleteDriverOrderById.user.user_detail.name} has been deleted!`,
       user_id: deleteDriverOrderById.admin_time_block.user_id,
     };
     await this.notification.handlePushNotification(adminNotifData);
 
     // SUCCESS DELETE DRIVER ORDER NOTIF FOR DRIVER
     const driverNotifData = {
-      title: 'Your order has been deleted',
-      body: 'You order has been deleted by system',
+      title: 'Your wave registration has been deleted',
+      body: 'You wave registration has been deleted by system',
       user_id: deleteDriverOrderById.user.user_id,
     };
     await this.notification.handlePushNotification(driverNotifData);

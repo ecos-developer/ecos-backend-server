@@ -237,6 +237,11 @@ export class RealtimeCustomerEachDayPickupService {
       updatePickup.customer_order_header.driver_order_header.user.user_id,
     );
 
+    updatePickup.is_arrived
+    updatePickup.is_pickup
+    updatePickup.is_started
+    updatePickup.is_home_arrived
+
     // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
     const driverNotifData = {
       title: 'Daily journey has been updated!',
