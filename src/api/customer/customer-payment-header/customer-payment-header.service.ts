@@ -250,7 +250,7 @@ export class CustomerPaymentHeaderService {
     // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
     const customerNotifData = {
       title: 'Your payment had been approved',
-      body: 'Your payment has been updated!',
+      body: 'Cant wait to start your journey very soon!',
       user_id: updatePaymentHeader.customer_order_header.user_id,
     };
     await this.notification.handlePushNotification(customerNotifData);
