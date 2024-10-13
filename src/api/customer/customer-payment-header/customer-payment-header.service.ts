@@ -233,6 +233,10 @@ export class CustomerPaymentHeaderService {
         },
       },
     });
+
+    await this.firebase.paymentForAdminRealtime(
+      this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
+    );
     await this.firebase.paymentEachRealtime(
       this.sse.PAYMENTHEADER_OBSERVABLE_STRING,
       customer_payment_id,
