@@ -237,26 +237,95 @@ export class RealtimeCustomerEachDayPickupService {
       updatePickup.customer_order_header.driver_order_header.user.user_id,
     );
 
-    updatePickup.is_arrived
-    updatePickup.is_pickup
-    updatePickup.is_started
-    updatePickup.is_home_arrived
+    // OTW JEMPUT
+    if (
+      updatePickup.is_started &&
+      !updatePickup.is_arrived &&
+      !updatePickup.is_pickup &&
+      !updatePickup.is_home_arrived
+    ) {
+      const customerNotifData = {
+        title: 'Driver is on the way',
+        body: 'Be ready fellas',
+        user_id: updatePickup.customer_order_header.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
 
-    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR DRIVER
-    const driverNotifData = {
-      title: 'Daily journey has been updated!',
-      body: `Daily journey has updated for user name ${updatePickup.customer_order_header.user.user_detail.name}!`,
-      user_id:
-        updatePickup.customer_order_header.driver_order_header.user.user_id,
-    };
-    await this.notification.handlePushNotification(driverNotifData);
-    // SUCCESS UPDATE CUSTOMER PAYMENT NOTIF FOR USER
-    const customerNotifData = {
-      title: 'Your daily journey today has updated by driver',
-      body: 'Check your latest daily journey status',
-      user_id: updatePickup.customer_order_header.user_id,
-    };
-    await this.notification.handlePushNotification(customerNotifData);
+    // DRIVER UDAH NYAMPE SEKOLAH (JALAN BALIK KE RUMAH)
+    if (
+      updatePickup.is_started &&
+      updatePickup.is_arrived &&
+      !updatePickup.is_pickup &&
+      !updatePickup.is_home_arrived
+    ) {
+      const customerNotifData = {
+        title: 'Driver has arrived at school',
+        body: 'Driver will wait for 10 minutes',
+        user_id: updatePickup.customer_order_header.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // DRIVER UDAH PICKUP CUSTOMER DI SEKOLAH (JALAN BALIK KE RUMAH)
+    if (
+      updatePickup.is_started &&
+      updatePickup.is_arrived &&
+      updatePickup.is_pickup &&
+      !updatePickup.is_home_arrived
+    ) {
+      const customerNotifData = {
+        title: 'You have been picked up by driver',
+        body: 'Enjoy your journey',
+        user_id: updatePickup.customer_order_header.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // UDAH NYAMPE DI RUMAH USER
+    if (
+      updatePickup.is_started &&
+      !updatePickup.is_arrived &&
+      !updatePickup.is_pickup &&
+      updatePickup.is_home_arrived
+    ) {
+      const customerNotifData = {
+        title: 'Driver has arrived at the pickup point',
+        body: 'Driver will wait for 10 minutes',
+        user_id: updatePickup.customer_order_header.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // UDAH JEMPUT SI USER
+    if (
+      updatePickup.is_started &&
+      !updatePickup.is_arrived &&
+      updatePickup.is_pickup &&
+      updatePickup.is_home_arrived
+    ) {
+      const customerNotifData = {
+        title: 'You have been picked up by driver',
+        body: 'Enjoy your journey',
+        user_id: updatePickup.customer_order_header.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // UDAH SAMPE
+    if (
+      updatePickup.is_started &&
+      updatePickup.is_arrived &&
+      updatePickup.is_pickup &&
+      updatePickup.is_home_arrived
+    ) {
+      const customerNotifData = {
+        title: 'You have arrived at your destination',
+        body: 'Have a nice day',
+        user_id: updatePickup.customer_order_header.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
     return updatePickup;
   }
 
