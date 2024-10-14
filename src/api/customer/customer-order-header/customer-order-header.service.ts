@@ -184,13 +184,57 @@ export class CustomerOrderHeaderService {
       id,
     );
 
-    // SUCCESS UPDATE CUSTOMER ORDER HEADER NOTIF FOR CUSTOMER
-    const customerNotifData = {
-      title: 'Your order has been approved',
-      body: `Successfully update order for driver named ${updateCustomerOrderHeader.driver_order_header.user.user_detail.name}!`,
-      user_id: updateCustomerOrderHeader.user_id,
-    };
-    await this.notification.handlePushNotification(customerNotifData);
+    updateCustomerOrderHeader.cancel_pergi;
+    updateCustomerOrderHeader.cancel_pulang;
+
+    // DRIVER APPROVED
+    if (updateCustomerOrderHeader.is_driver_approved) {
+      const customerNotifData = {
+        title: 'Your order has been approved',
+        body: `Successfully update order for driver named ${updateCustomerOrderHeader.driver_order_header.user.user_detail.name}!`,
+        user_id: updateCustomerOrderHeader.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // CANCEL PERGI
+    if (
+      updateCustomerOrderHeader.cancel_pergi &&
+      !updateCustomerOrderHeader.cancel_pulang
+    ) {
+      const customerNotifData = {
+        title: `A customer cancel a trip`,
+        body: `Customer name ${updateCustomerOrderHeader.user.user_detail.name} cancels for trip to school tomorrow`,
+        user_id: updateCustomerOrderHeader.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // CANCEL PULANG
+    if (
+      !updateCustomerOrderHeader.cancel_pergi &&
+      updateCustomerOrderHeader.cancel_pulang
+    ) {
+      const customerNotifData = {
+        title: `A customer cancel a trip`,
+        body: `Customer name ${updateCustomerOrderHeader.user.user_detail.name} cancels for trip back home`,
+        user_id: updateCustomerOrderHeader.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
+
+    // CANCEL PULANG & PERGI
+    if (
+      !updateCustomerOrderHeader.cancel_pergi &&
+      updateCustomerOrderHeader.cancel_pulang
+    ) {
+      const customerNotifData = {
+        title: `A customer cancel a trip`,
+        body: `Customer name ${updateCustomerOrderHeader.user.user_detail.name} cancels both trips`,
+        user_id: updateCustomerOrderHeader.user_id,
+      };
+      await this.notification.handlePushNotification(customerNotifData);
+    }
 
     return updateCustomerOrderHeader;
   }
