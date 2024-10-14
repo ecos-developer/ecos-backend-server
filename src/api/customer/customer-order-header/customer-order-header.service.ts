@@ -188,7 +188,11 @@ export class CustomerOrderHeaderService {
     updateCustomerOrderHeader.cancel_pulang;
 
     // DRIVER APPROVED
-    if (updateCustomerOrderHeader.is_driver_approved) {
+    if (
+      updateCustomerOrderHeader.is_driver_approved &&
+      !updateCustomerOrderHeader.cancel_pergi &&
+      !updateCustomerOrderHeader.cancel_pulang
+    ) {
       const customerNotifData = {
         title: 'Your order has been approved',
         body: `Successfully update order for driver named ${updateCustomerOrderHeader.driver_order_header.user.user_detail.name}!`,
@@ -225,7 +229,7 @@ export class CustomerOrderHeaderService {
 
     // CANCEL PULANG & PERGI
     if (
-      !updateCustomerOrderHeader.cancel_pergi &&
+      updateCustomerOrderHeader.cancel_pergi &&
       updateCustomerOrderHeader.cancel_pulang
     ) {
       const customerNotifData = {
