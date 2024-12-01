@@ -8,7 +8,7 @@ async function bootstrap() {
 
   // Set up Swagger
   const config = new DocumentBuilder()
-    .setTitle('ECOS Swagger Backend (Development Stage)')
+    .setTitle('ECOS Swagger Backend (Dev Stage)')
     .setVersion('1.0')
     .addBearerAuth(
       {
