@@ -35,5 +35,4 @@ FROM node:20-alpine As production
 RUN apk add --no-cache openssl
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-COPY --chown=node:node --from=build /usr/src/app/public ./public
 CMD ["node", "dist/main.js"]
