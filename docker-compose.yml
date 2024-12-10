@@ -14,3 +14,5 @@ services:
     volumes:
       - .:/usr/src/app
     command: ['node', 'dist/main.js']
+
+    
